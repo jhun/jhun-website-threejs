@@ -1,0 +1,10 @@
+/node_modules
+/dist
+src/models
+src/imagens
+.DS_Store
+*.log
+.idea
+.vscode
+.cache
+package-lock.json
