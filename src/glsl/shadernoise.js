@@ -135,10 +135,10 @@ uniform float uTime;
 #define DRAG_MULT 0.048
 #define ITERATIONS_RAYMARCH 13
 #define ITERATIONS_NORMAL 48
-
 #define Mouse (uMouse.xy / uResolution.xy)
 #define Resolution (uResolution.yx)
 #define Time (uTime)
+
 
 vec2 wavedx(vec2 position, vec2 direction, float speed, float frequency, float timeshift) {
     float x = dot(direction, position) * frequency + timeshift * speed;
@@ -208,7 +208,7 @@ vec3 getRay(vec2 uv){
     uv = (uv * 2.0 - 1.0) * vec2(Resolution.x / Resolution.y, 1.0);
 	vec3 proj = normalize(vec3(uv.x, uv.y, 1.0) + vec3(uv.x, uv.y, -1.0) * pow(length(uv), 2.0) * 0.05);	
     if(Resolution.x < 100.0) return proj;
-	vec3 ray = rotmat(vec3(0.0, -1.0, 0.0), (Mouse.x)) * rotmat(vec3(1.0, 0.0, 0.0), -.5 + 1.5 * (Mouse.y)) * proj;
+	vec3 ray = rotmat(vec3(0.0, -1.0, 0.0), (Mouse.x)) * rotmat(vec3(1.0, 0.0, 0.0), - 1.5 * (Mouse.y)) * proj;
     return ray;
 }
 

@@ -1,0 +1,60 @@
+@mixin vh-fix($property, $value: 100) {
+  $proportions: (3, 4), (2, 3), (10, 16), (9, 16), (10, 17); // 3/4, 2/3, 10/16, 9/16 and 10/17
+
+  #{$property}: #{$value}vh; // set property in normal vh, it'll be overwritten if device aspect ratio is one of declared
+
+  @each $proportion in $proportions {
+    $height: nth($proportion, 1);
+    $width: nth($proportion, 2);
+
+    @media (max-device-aspect-ratio: #{$height}/#{$width}) {
+      #{$property}: calc(
+        (100vw * (#{$width} / #{$height})) * (#{$value} / 100) * 0.91
+      );
+    }
+  }
+}
+
+body {
+  width: 100vw;
+  @include vh-fix(height);
+  overflow: hidden;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: tomato;
+}
+section {
+  position: absolute;
+  z-index: 10;
+  width: 100vw;
+  height: 100%;
+  text-align: center;
+  pointer-events: none;
+}
+#home .container {
+  width: 100%;
+  @include vh-fix(margin-top, 45);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  pointer-events: none;
+  /* background-color: violet; */
+}
+#home h1 {
+  display: block;
+  /* background-color: yellow; */
+  margin: 0;
+  user-select: none;
+}
+#home ul {
+  display: block;
+  /* background-color: yellowgreen; */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+#home ul li {
+  display: inline;
+  user-select: none;
+}

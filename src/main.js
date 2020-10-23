@@ -1,5 +1,5 @@
 import cssNormalize from "./css/base/normalize.css";
-import cssStyle from "./css/style.css";
+import cssStyle from "./css/style.scss";
 import * as THREE from "three";
 import { camera, scene, renderer, controls } from "./cameraSceneRenderer.js";
 import { updateLights } from "./lights.js";
