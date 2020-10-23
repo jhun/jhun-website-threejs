@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { vertexshader, fragmentshader } from "./glsl/shadernoise.js";
-import { scene } from "./cameraSceneRenderer.js";
+import { scene, camera } from "./cameraSceneRenderer.js";
 import ocean from "./imagens/jhun.jpg";
 
 let sceneObjects = [];
@@ -8,10 +8,15 @@ let mesh;
 let material;
 let clock;
 let uniforms;
+let mousePos = new THREE.Vector3(0.0, 0.0, 0.0);
+let mousePosNew = new THREE.Vector3(0.0, 0.0, 0.0);
 
 export const addPlaneCustomShader = () => {
   clock = new THREE.Clock();
-  let geometry = new THREE.PlaneGeometry(4, 6, 10, 10);
+  let vFOV = THREE.MathUtils.degToRad(camera.fov); // convert vertical fov to radians
+  let height = 2 * Math.tan(vFOV / 2) * 1000; // visible height
+  let width = height * camera.aspect;
+  let geometry = new THREE.PlaneGeometry(width, height, 10, 10);
   uniforms = THREE.UniformsUtils.merge([
     THREE.UniformsLib["lights"],
     { diffuse: { type: "c", value: new THREE.Color(0x404040) } },
@@ -40,16 +45,20 @@ export const addPlaneCustomShader = () => {
 };
 
 export const updatePlaneCustomShader = () => {
+  mousePosNew.lerp(mousePos, 0.08);
   material.uniforms.uTime.value = clock.getElapsedTime();
+  material.uniforms.uMouse.value.x = mousePosNew.x;
+  material.uniforms.uMouse.value.y = mousePosNew.y;
+  material.uniforms.uMouse.value.z = mousePosNew.z;
 };
 
 window.addEventListener(
   "mousemove",
   function (event) {
-    uniforms.uMouse.value.x = event.clientX;
-    uniforms.uMouse.value.y = window.innerHeight - event.clientY;
-    uniforms.uMouse.value.z = 1;
-    console.log(uniforms.uMouse.value.x, uniforms.uMouse.value.y);
+    mousePos.x = event.clientX;
+    mousePos.y = window.innerHeight - event.clientY;
+    mousePos.z = 1;
+    // console.log(uniforms.uMouse.value.x, uniforms.uMouse.value.y);
   },
   false
 );
@@ -58,29 +67,16 @@ window.addEventListener(
   function (event) {
     if (Math.abs(window.orientation) === 90) {
       // Landscape
-      uniforms.uResolution = {
-        value: {
-          x: window.innerWidth,
-          y: window.innerHeight,
-        },
-      };
-      uniforms.uMouse.value.x = event.touches[0].pageX;
-      uniforms.uMouse.value.y = window.innerHeight - event.touches[0].pageY;
-      uniforms.uMouse.value.z = 1.0;
+      mousePos.x = event.touches[0].pageX;
+      mousePos.y = window.innerHeight - event.touches[0].pageY;
+      mousePos.z = 1;
     } else {
       // Portrait
-      uniforms.uResolution = {
-        value: {
-          x: window.innerHeight,
-          y: window.innerWidth,
-        },
-      };
-      uniforms.uMouse.value.x = event.touches[0].pageX * 2;
-      uniforms.uMouse.value.y =
-        (window.innerHeight - event.touches[0].pageY) / 2;
-      uniforms.uMouse.value.z = 1.0;
+      mousePos.x = event.touches[0].pageX * 2;
+      mousePos.y = (window.innerHeight - event.touches[0].pageY) / 2;
+      mousePos.z = 1;
     }
-    console.log(uniforms.uMouse.value.x, uniforms.uMouse.value.y);
+    // console.log(uniforms.uMouse.value.x, uniforms.uMouse.value.y);
   },
   false
 );
