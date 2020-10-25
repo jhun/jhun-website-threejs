@@ -5,9 +5,9 @@ const color = "lightblue";
 const intensity = 0.1;
 export const directionalLight = new THREE.DirectionalLight(color, intensity);
 directionalLight.position.set(-1, 20, 4);
-// scene.add(directionalLight);
+scene.add(directionalLight);
 
-export const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+export const ambientLight = new THREE.AmbientLight(0xffffff); // soft white light
 scene.add(ambientLight);
 
 THREE.PointLight.prototype.addSphere = function () {
@@ -22,12 +22,12 @@ THREE.PointLight.prototype.addSphere = function () {
 export const light1 = new THREE.PointLight(0xff0000, 0.4, 3, 2);
 light1.addSphere();
 light1.position.set(1, 0, 1);
-scene.add(light1);
+// scene.add(light1);
 
 export const light2 = new THREE.PointLight(0x00ff00, 0.4, 3, 2);
 light2.addSphere();
 light2.position.set(0, 1, 1);
-scene.add(light2);
+// scene.add(light2);
 
 export const updateLights = () => {
   var timer = Date.now() * 0.0005;

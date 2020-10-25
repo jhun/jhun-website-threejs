@@ -1,4 +1,6 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const _require = (id) =>
+  require(require.resolve(id, { paths: [require.main.path] }));
+const HtmlWebpackPlugin = _require("html-webpack-plugin");
 const path = require("path");
 
 module.exports = {

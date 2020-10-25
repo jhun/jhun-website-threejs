@@ -1,25 +1,43 @@
-@mixin vh-fix($property, $value: 100) {
+@mixin vh-fix($property, $value: 1, $offset: 0px) {
   $proportions: (3, 4), (2, 3), (10, 16), (9, 16), (10, 17); // 3/4, 2/3, 10/16, 9/16 and 10/17
+  $proportions2: (4, 3), (3, 2), (16, 10), (16, 9), (17, 10);
 
-  #{$property}: #{$value}vh; // set property in normal vh, it'll be overwritten if device aspect ratio is one of declared
+  #{$property}: calc(
+    #{$value}vh + #{$offset}
+  ); // set property in normal vh, it'll be overwritten if device aspect ratio is one of declared
 
   @each $proportion in $proportions {
     $height: nth($proportion, 1);
     $width: nth($proportion, 2);
 
-    @media (max-device-aspect-ratio: #{$height}/#{$width}) {
+    @media (max-device-aspect-ratio: #{$height}/#{$width} ) and (max-width: 768px) {
       #{$property}: calc(
-        (100vw * (#{$width} / #{$height})) * (#{$value} / 100) * 0.91
+        ((100vw * (#{$width} / #{$height})) * (#{$value} / 100) * 0.91) + #{$offset} +
+          40px
+      );
+    }
+  }
+  @each $proportion2 in $proportions2 {
+    $height: nth($proportion2, 2);
+    $width: nth($proportion2, 1);
+
+    @media (max-device-aspect-ratio: #{$height}/#{$width} ) and (max-width: 768px) {
+      #{$property}: calc(
+        ((100vw * (#{$width} / #{$height})) * (#{$value} / 100) * 0.91) + #{$offset} +
+          40px
       );
     }
   }
 }
+// canvas {
+//   pointer-events: none;
+// }
 
 body {
   width: 100vw;
   @include vh-fix(height);
   overflow: hidden;
-  color: white;
+  color: rgba(255, 255, 255, 1);
   font-family: Arial, Helvetica, sans-serif;
   background-color: tomato;
 }
@@ -32,29 +50,48 @@ section {
   pointer-events: none;
 }
 #home .container {
+  position: relative;
   width: 100%;
-  @include vh-fix(margin-top, 45);
+  height: 80px;
+  @include vh-fix(margin-top, 50, -80px);
   margin-left: auto;
   margin-right: auto;
   text-align: center;
   pointer-events: none;
-  /* background-color: violet; */
+  // background-color: violet;
 }
 #home h1 {
+  width: 100%;
+  font-family: "Oswald", sans-serif;
+  font-size: 18px;
+  text-rendering: geometricPrecision;
+  letter-spacing: 10px;
   display: block;
-  /* background-color: yellow; */
+  // background-color: yellow;
   margin: 0;
+  padding: 0 0 0 7px;
   user-select: none;
+  height: 40px;
 }
 #home ul {
+  width: 100%;
+  font-family: "Quicksand", sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
   display: block;
-  /* background-color: yellowgreen; */
+  height: 40px;
+  line-height: 40px;
+  width: 100%;
+  // background-color: yellowgreen;
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 0px;
   padding: 0;
   user-select: none;
 }
 #home ul li {
+  margin: 0 20px;
+  padding: 0;
   display: inline;
+  text-align: center;
   user-select: none;
 }
