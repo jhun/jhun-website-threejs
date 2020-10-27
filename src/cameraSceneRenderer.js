@@ -1,7 +1,13 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import stranger from "./sounds/stranger-things-theme-song.mp3";
+import LoadSound from "./sound.js";
 
-export var camera, cameraShader, scene, sceneShader, renderer, controls;
+export var camera, scene, renderer, controls;
+
+let orbitEnded = true;
+let posCameraInit = new THREE.Vector3(0.0, 0.0, 10.0);
+let rotCameraInit = new THREE.Vector3(0.0, 0.0, 0.0);
 
 camera = new THREE.PerspectiveCamera(
   45,
@@ -11,36 +17,68 @@ camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 10;
 
-cameraShader = new THREE.PerspectiveCamera(
-  45,
-  window.innerWidth / window.innerHeight,
-  0.01,
-  10000
-);
-cameraShader.position.z = 10;
-
 scene = new THREE.Scene();
 {
-  // const near = 0.001;
-  // const far = 5;
-  // const color = "#AAFFFF";
-  // scene.fog = new THREE.Fog(color, near, far);
-  // scene.background = new THREE.Color(color);
+  const near = 1;
+  const far = 50;
+  const color = "#000020";
+  scene.fog = new THREE.Fog(color, near, far);
+  scene.background = new THREE.Color(color);
 }
 
-sceneShader = new THREE.Scene();
-{
-  // const near = 0.1;
-  // const far = 200;
-  // const color = "lightblue";
-  // sceneShader.fog = new THREE.Fog(color, near, far);
-}
-
-renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true,
+});
 renderer.autoClear = false; // important!
-renderer.setClearColor(0x000000, 0);
+// renderer.autoClearColor = false; // important!
+// renderer.autoClearDepth = false; // important!
+// renderer.setClearColor(0x000000, 0.1);
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-// controls = new OrbitControls(camera, renderer.domElement);
+var musicHome = new LoadSound(scene, camera, stranger);
+
+const initOrbit = (pos, rot) => {
+  orbitEnded = false;
+  if (!musicHome.sound.isPlaying && musicHome.canPlay) {
+    document.querySelector("h1").innerHTML = "JHUN KUSANO";
+    musicHome.sound.play();
+    document.querySelector("canvas").classList.add("on");
+    document.getElementsByClassName("menu-home")[0].classList.add("on");
+  }
+};
+
+const endOrbit = (pos, rot) => {
+  orbitEnded = true;
+};
+
+const updateEndOrbit = () => {
+  if (orbitEnded) {
+    camera.position.x = lerp(camera.position.x, posCameraInit.x, 0.1);
+    camera.position.y = lerp(camera.position.y, posCameraInit.y, 0.1);
+    camera.position.z = lerp(camera.position.z, posCameraInit.z, 0.1);
+    camera.rotation.x = lerp(camera.rotation.x, rotCameraInit.x, 0.1);
+    camera.rotation.y = lerp(camera.rotation.y, rotCameraInit.y, 0.1);
+    camera.rotation.z = lerp(camera.rotation.z, rotCameraInit.z, 0.1);
+  }
+};
+
+setInterval(updateEndOrbit, 1000 / 60);
+
+function lerp(start, end, amt) {
+  return (1 - amt) * start + amt * end;
+}
+
+controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.enableDamping = true;
+controls.minPolarAngle = 0.8;
+controls.maxPolarAngle = 10.4;
+controls.dampingFactor = 0.07;
+controls.rotateSpeed = 0.17;
+controls.addEventListener("start", initOrbit, true);
+controls.addEventListener("end", endOrbit, true);

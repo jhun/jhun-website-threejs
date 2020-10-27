@@ -1,7 +1,6 @@
 import * as THREE from "three";
-import { scene } from "./cameraSceneRenderer.js";
+import { scene, camera } from "./cameraSceneRenderer.js";
 import GLTFLoader from "three-gltf-loader";
-import * as PlaneCustomShader from "./planeCustomShader.js";
 
 export default class LoadGLTF {
   constructor(
@@ -38,18 +37,18 @@ export default class LoadGLTF {
       gltfAnimal,
       (gltf) => {
         this.model = gltf;
-        var newMaterial = new THREE.MeshBasicMaterial({
-          color: new THREE.Color(0x6622ff),
+        var newMaterial = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(0xaa00ff),
           skinning: true,
           morphTargets: true,
           wireframeLinewidth: 1,
           wireframe: true,
           transparent: true,
-          opacity: 0.7,
-          side: THREE.DoubleSide,
+          opacity: 1,
+          // side: THREE.FrontSide,
         });
         this.model.scene.traverse((child) => {
-          // if (child.material) child.material.metalness = 0;
+          if (child.material) child.material.metalness = 0;
           if (child.isMesh) {
             child.material = newMaterial;
           }
@@ -81,7 +80,6 @@ export default class LoadGLTF {
 
   updateAnimal() {
     this.delta = this.clock.getDelta() * this.velocityMoviment;
-    this.mouse.copy(PlaneCustomShader.mousePosNew);
     if (typeof this.mixer === "undefined") {
     } else {
       this.mixer.update(this.delta);
@@ -90,40 +88,9 @@ export default class LoadGLTF {
       } else {
         this.model.scene.position.x = -this.limitPositionAnimals;
       }
-
-      this.container.position.x = -this.mouse.x / 400;
-      let valor = this.inverted ? -this.mouse.y : this.mouse.y;
-      if (this.model.scene.position.x < 0) {
-        this.container.position.y =
-          this.mouse.y / 300 +
-          (this.mouse.y / 300) *
-            4 *
-            -(-(10 + this.model.scene.position.x) / 45 / this.resolution.y) *
-            this.distortion;
-      } else {
-        this.container.position.y =
-          this.mouse.y / 300 +
-          (this.mouse.y / 300) *
-            4 *
-            -(-(10 - this.model.scene.position.x) / 45 / this.resolution.y) *
-            this.distortion;
-      }
     }
   }
 }
-
-var geometry = new THREE.PlaneGeometry(300, 600, 10, 10);
-var material = new THREE.MeshBasicMaterial({
-  color: 0x44ffff,
-  side: THREE.DoubleSide,
-  wireframe: true,
-});
-
-var plane = new THREE.Mesh(geometry, material);
-plane.position.z = -300;
-plane.position.y = -30;
-plane.rotation.x = Math.PI / 2;
-scene.add(plane);
 
 THREE.Vector2.prototype.roundToZero = function (digits) {
   var e = Math.pow(10, digits || 0);
