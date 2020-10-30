@@ -20,11 +20,11 @@ export default class LoadSound {
         if ((xhr.loaded / xhr.total) * 100 == 100) {
           setTimeout(() => {
             this.canPlay = true;
-            document.querySelector("h1").innerHTML = "CLICK TO ENTER";
+            document.querySelector("h1").innerHTML = "START HERE";
           }, 1000);
         }
         document.querySelector("h1").innerHTML =
-          (xhr.loaded / xhr.total) * 100 + "% loaded";
+          Math.floor((xhr.loaded / xhr.total) * 100) + "% loaded";
       },
       (err) => {
         console.log("An error happened");

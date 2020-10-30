@@ -56,7 +56,7 @@ function init() {
   //   wireframe: true,
   // });
 
-  /* ANIMALS ATTRIBUTES LIST
+  /* ANIMALS VALUES LIST
     gltfAnimal,
     scale,
     velocity,
@@ -71,23 +71,23 @@ function init() {
   */
 
   // prettier-ignore
-  horse = new LoadGLTF(gltfCavalo, 0.0318, 18, 1, -7, -5.1, 70, 600, -11,false, false);
+  horse = new LoadGLTF(gltfCavalo, scene, camera,  0.0318, 18, 1, -7, -4.1, 70, 600, -11,false, false);
   // prettier-ignore
-  fox = new LoadGLTF(gltfFox, 0.0348, 15, 1, -30, -2.7, 70, 600, -5,false, true);
+  fox = new LoadGLTF(gltfFox, scene, camera, 0.0348, 15, 1, -30, -2.7, 70, 600, -5,false, true);
   // prettier-ignore
-  wolf = new LoadGLTF(gltfWolf, 0.0348, 19, 1, 0, -5.8, 70, 600, -21,false, true);
+  wolf = new LoadGLTF(gltfWolf, scene, camera, 0.0348, 19, 1, 0, -3.8, 70, 600, -8,false, true);
   // prettier-ignore
-  panther = new LoadGLTF(gltfPanther, 0.0348, 30, 1, 90, -3.9, 150, 600, -13,false, true);
+  panther = new LoadGLTF(gltfPanther, scene, camera, 0.0348, 30, 1, 90, -4.9, 150, 600, -13,false, true);
   // prettier-ignore
-  bear = new LoadGLTF(gltfBear, 0.0278, 15, 0.7, -30, -2.2, 70, 600, -2,false, true);
+  bear = new LoadGLTF(gltfBear, scene, camera, 0.0278, 15, 0.7, -30, -2.2, 70, 600, -2,false, true);
   // prettier-ignore
-  eagle = new LoadGLTF(gltfEagle, 0.0318, 14, 1, -6, 5.0, 70, 600, -17,false, true);
+  eagle = new LoadGLTF(gltfEagle, scene, camera, 0.0318, 14, 1, -6, 5.0, 70, 600, -17,false, true);
   // prettier-ignore
-  vulture = new LoadGLTF(gltfVulture, 0.0318, 12, .7, -4, 3.0, 70, 600, -20,false, true);
+  vulture = new LoadGLTF(gltfVulture, scene, camera, 0.0318, 12, .7, -4, 3.0, 70, 600, -20,false, true);
   // prettier-ignore
-  // frog = new LoadGLTF(gltfFrog, 0.0318, 12, 0.5, -13, -1.2, 70, 600, 2,false, true);
+  // frog = new LoadGLTF(gltfFrog, scene, camera, 0.0318, 12, 0.5, -13, -1.2, 70, 600, 2,false, true);
   // prettier-ignore
-  aligator = new LoadGLTF(gltfAligator, 0.0318, 9, 0.5, -26, -6.0, 70, 600, -21, true, true);
+  aligator = new LoadGLTF(gltfAligator, scene, camera, 0.0318, 9, 0.5, -26, -6.0, 70, 600, -21, true, true);
   // prettier-ignore-end
 
   // meshRoot = new THREE.Mesh(geometry, material);
@@ -121,9 +121,9 @@ function init() {
 
   var fxaaPass = new ShaderPass(FXAAShader);
 
-  fxaaPass.uniforms["resolution"].value.x =
+  fxaaPass.material.uniforms["resolution"].value.x =
     1 / (window.innerWidth * pixelRatio);
-  fxaaPass.uniforms["resolution"].value.y =
+  fxaaPass.material.uniforms["resolution"].value.y =
     1 / (window.innerHeight * pixelRatio);
 
   composer = new EffectComposer(renderer);
@@ -132,7 +132,7 @@ function init() {
   composer.addPass(renderPass);
   composer.addPass(fxaaPass);
 
-  composer.addPass(afterimagePass);
+  // composer.addPass(afterimagePass);
   composer.addPass(glitchPass);
   composer.addPass(bloomPass);
 

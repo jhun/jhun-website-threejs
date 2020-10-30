@@ -1,10 +1,13 @@
 import * as THREE from "three";
-import { scene, camera } from "./cameraSceneRenderer.js";
 import GLTFLoader from "three-gltf-loader";
+import { Mesh } from "three";
+import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 export default class LoadGLTF {
   constructor(
     gltfAnimal,
+    scene,
+    camera,
     scale,
     velocity,
     velocityMoviment,
@@ -16,6 +19,8 @@ export default class LoadGLTF {
     yRotationInverted,
     inverted
   ) {
+    this.scene = scene;
+    this.camera = camera;
     this.resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
     this.limitPositionAnimals = limitPositionAnimals;
     this.clock = new THREE.Clock();
@@ -30,13 +35,29 @@ export default class LoadGLTF {
     this.container = new THREE.Object3D();
     this.mouse = new THREE.Vector2(0.0, 0.0);
     this.model;
+    this.modelTrail = new Array(8);
+    this.mixerTrail = new Array(8);
+    this.pointsMaterialTrail = new Array(8);
+    this.newMaterialTrail = new Array(8);
+    this.indice = [0, 0, 0, 0, 0, 0, 0, 0];
+    this.durationTrail;
+    this.childPoints;
     this.distortion = distortion;
     this.yRotationInverted = yRotationInverted;
     this.inverted = inverted;
+    this.mesh;
+    this.pointsMaterial;
+    this.disabled = false;
+    this.points2;
     this.loaderAnimal.load(
       gltfAnimal,
       (gltf) => {
+        this.durationTrail = this.randomIntFromInterval(40, 70);
         this.model = gltf;
+        for (let i = 0; i < this.modelTrail.length; i++) {
+          this.modelTrail[i] = SkeletonUtils.clone(this.model.scene);
+        }
+
         var newMaterial = new THREE.MeshStandardMaterial({
           color: new THREE.Color(0xaa00ff),
           skinning: true,
@@ -47,24 +68,92 @@ export default class LoadGLTF {
           opacity: 1,
           // side: THREE.FrontSide,
         });
+        for (let i = 0; i < this.newMaterialTrail.length; i++) {
+          this.newMaterialTrail[i] = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0xff7700),
+            skinning: true,
+            morphTargets: true,
+            wireframeLinewidth: 1,
+            wireframe: true,
+            transparent: true,
+            opacity: 1,
+            // side: THREE.FrontSide,
+          });
+        }
+        this.pointsMaterial = new THREE.PointsMaterial({
+          color: new THREE.Color(20, 50, 80),
+          size: 0.099,
+          sizeAttenuation: true,
+          morphTargets: true,
+          transparent: true,
+        });
+        for (let i = 0; i < this.pointsMaterialTrail.length; i++) {
+          this.pointsMaterialTrail[i] = new THREE.PointsMaterial({
+            color: new THREE.Color(20, 50, 80),
+            size: 0.099,
+            sizeAttenuation: true,
+            morphTargets: true,
+            transparent: true,
+          });
+        }
         this.model.scene.traverse((child) => {
-          if (child.material) child.material.metalness = 0;
+          // if (child.material) child.material.metalness = 0;
           if (child.isMesh) {
+            var points = new THREE.Points(child.geometry, this.pointsMaterial);
+            points.morphTargetInfluences = child.morphTargetInfluences;
+            points.morphTargetDictionary = child.morphTargetDictionary;
+
             child.material = newMaterial;
+
+            child.add(points);
           }
         });
+
         this.model.scene.scale.multiplyScalar(scale); // adjust scalar factor to match your scene scale
         this.model.scene.position.x = initialPosition; // once rescaled, position the model where needed
         this.model.scene.position.y = -0.2 - this.zPos / 5 + verticalPos;
         this.model.scene.position.z = 2 + this.zPos;
         this.model.scene.rotation.y = yRotationInverted ? 1.5 : -1.5;
-        this.container.add(this.model.scene);
-        scene.add(this.container);
+
+        for (let i = 0; i < this.modelTrail.length; i++) {
+          this.modelTrail[i].traverse((child) => {
+            // if (child.material) child.material.metalness = 0;
+            if (child.isMesh) {
+              var points = new THREE.Points(
+                child.geometry,
+                this.pointsMaterialTrail[i]
+              );
+              points.morphTargetInfluences = child.morphTargetInfluences;
+              points.morphTargetDictionary = child.morphTargetDictionary;
+
+              child.material = this.newMaterialTrail[i];
+
+              child.add(points);
+            }
+          });
+          this.modelTrail[i].scale.multiplyScalar(scale); // adjust scalar factor to match your scene scale
+          this.modelTrail[i].position.x = initialPosition - 100; // once rescaled, position the model where needed
+          this.modelTrail[i].position.y = -0.2 - this.zPos / 5 + verticalPos;
+          this.modelTrail[i].position.z = 2 + this.zPos;
+          this.modelTrail[i].rotation.y = yRotationInverted ? 1.5 : -1.5;
+          this.container.add(this.model.scene);
+          this.container.add(this.modelTrail[i]);
+        }
+
+        this.scene.add(this.container);
 
         // Play a specific animation
         this.mixer = new THREE.AnimationMixer(this.model.scene);
+        for (let i = 0; i < this.mixerTrail.length; i++) {
+          this.mixerTrail[i] = new THREE.AnimationMixer(this.modelTrail[i]);
+        }
+
         this.model.animations.forEach((clip) => {
+          // console.log(clip);
           this.mixer.clipAction(clip).play();
+          for (let i = 0; i < this.mixerTrail.length; i++) {
+            this.mixerTrail[i].clipAction(clip).play();
+          }
         });
       },
       (xhr) => {
@@ -82,6 +171,55 @@ export default class LoadGLTF {
     this.delta = this.clock.getDelta() * this.velocityMoviment;
     if (typeof this.mixer === "undefined") {
     } else {
+      for (let i = 0; i < this.mixerTrail.length; i++) {
+        if (
+          this.indice[this.mixerTrail.length - 1] >
+          this.durationTrail * this.mixerTrail.length - 1
+        ) {
+          for (let i = 0; i < this.indice.length; i++) {
+            this.indice[i] = 0;
+          }
+          this.durationTrail = this.randomIntFromInterval(40, 70);
+        } else if (
+          this.indice[i] > 11 * i &&
+          this.indice[i] <= this.durationTrail * i
+        ) {
+          this.indice[i] += 0.5;
+          this.mixerTrail[i].setTime(this.mixerTrail[i].time + 0.002);
+          this.modelTrail[i].traverse((child) => {
+            if (child.isMesh) {
+              child.children[0].material.opacity -= 0.0025;
+              child.material.opacity -= 0.0025;
+              if (child.children[0].material.opacity <= 0) {
+                child.visible = false;
+                this.modelTrail[i].position.x = this.model.scene.position.x;
+              }
+            }
+            this.modelTrail[i].position.x =
+              this.modelTrail[i].position.x - i * 0.001;
+          });
+        } else if (this.indice[i] > 10 * i && this.indice[i] <= 11 * i) {
+          this.indice[i] += 0.5;
+          this.mixerTrail[i].setTime(this.mixer.time);
+          this.modelTrail[i].position.x = this.model.scene.position.x;
+          this.modelTrail[i].traverse((child) => {
+            if (child.isMesh) {
+              child.visible = true;
+              child.children[0].material.opacity = 1;
+              child.material.opacity = 1;
+            }
+          });
+        } else {
+          this.indice[i] += 0.5;
+          this.modelTrail[i].traverse((child) => {
+            if (child.isMesh) {
+              child.visible = false;
+              child.children[0].material.opacity = 0;
+              child.material.opacity = 0;
+            }
+          });
+        }
+      }
       this.mixer.update(this.delta);
       if (this.model.scene.position.x < this.limitPositionAnimals) {
         this.model.scene.position.x += this.delta * this.velocity;
@@ -89,6 +227,10 @@ export default class LoadGLTF {
         this.model.scene.position.x = -this.limitPositionAnimals;
       }
     }
+  }
+
+  randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }
 

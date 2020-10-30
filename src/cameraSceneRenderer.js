@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import stranger from "./sounds/stranger-things-theme-song.mp3";
+import stranger from "./sounds/stranger-things-theme-song.ogg";
 import LoadSound from "./sound.js";
 
 export var camera, scene, renderer, controls;
@@ -20,7 +20,7 @@ camera.position.z = 10;
 scene = new THREE.Scene();
 {
   const near = 1;
-  const far = 50;
+  const far = 70;
   const color = "#000020";
   scene.fog = new THREE.Fog(color, near, far);
   scene.background = new THREE.Color(color);
@@ -45,6 +45,7 @@ const initOrbit = (pos, rot) => {
   orbitEnded = false;
   if (!musicHome.sound.isPlaying && musicHome.canPlay) {
     document.querySelector("h1").innerHTML = "JHUN KUSANO";
+    musicHome.sound.pause();
     musicHome.sound.play();
     document.querySelector("canvas").classList.add("on");
     document.getElementsByClassName("menu-home")[0].classList.add("on");

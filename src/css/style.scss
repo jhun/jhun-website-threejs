@@ -108,9 +108,42 @@ section {
 }
 
 #home ul li {
-  margin: 0 20px;
+  // margin: 0 20px;
   padding: 0;
   display: inline;
   text-align: center;
   user-select: none;
+  line-height: 15px;
+}
+
+#home ul li a {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.credits {
+  position: absolute;
+  width: 450px;
+  height: 50px;
+  right: 0;
+  bottom: 10;
+  font-family: "Oswald", sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+  // background-color: red;
+  margin: 0;
+  padding: 0;
+}
+.credits ul {
+  margin: 0;
+  padding: 0 10px 0 0 !important;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+.credits li {
+  display: block !important;
+  width: 100%;
+  text-align: right !important;
+  // background-color: green;
 }

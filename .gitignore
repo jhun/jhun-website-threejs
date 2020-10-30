@@ -2,6 +2,7 @@
 /dist
 src/models
 src/imagens
+src/sounds
 .DS_Store
 *.log
 .idea

@@ -1,21 +1,22 @@
 import * as THREE from "three";
+import { Reflector } from "three/examples/jsm/objects/Reflector";
+
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "three.meshline";
 
 export default class Floors {
   constructor(scene, camera) {
     this.scene = scene;
     this.camera = camera;
-    this.geometry = new THREE.PlaneGeometry(80, 80, 80, 80);
+    this.geometry = new THREE.PlaneGeometry(160, 80, 80, 80);
     this.line = new MeshLine();
     // line.setGeometry( geometry );
     this.line.setGeometry(this.geometry, function (p) {
       return p;
     });
     this.material = new THREE.MeshStandardMaterial({
-      color: 0x44ffff,
-      side: THREE.BackSide,
-      wireframe: true,
-      wireframeLinewidth: 1,
+      roughness: 0.0,
+      color: new THREE.Color(0.1, 0.1, 0.1),
+      transparent: true,
     });
 
     this.materialLine = new MeshLineMaterial({
@@ -25,7 +26,7 @@ export default class Floors {
       sizeAttenuation: false,
       side: THREE.BackSide,
       autoRotate: true,
-      lineWidth: 8,
+      lineWidth: 7,
       near: this.camera.near,
       far: this.camera.far,
       depthWrite: true,
@@ -40,6 +41,20 @@ export default class Floors {
     this.plane.rotation.x = Math.PI / 2;
 
     this.scene.add(this.plane);
+
+    this.horizontalMirror = new Reflector(this.geometry, {
+      clipBias: 0.003,
+      textureWidth: 1024 * window.devicePixelRatio,
+      textureHeight: 1024 * window.devicePixelRatio,
+      color: new THREE.Color(0, 0, 0.3, 0),
+      transparent: true,
+      recursion: 1,
+    });
+    this.horizontalMirror.position.z = -20;
+    this.horizontalMirror.position.y = -2.02;
+    this.horizontalMirror.rotation.x = -Math.PI / 2;
+
+    this.scene.add(this.horizontalMirror);
   }
   update() {
     let delta = this.clockPlane.getDelta();
