@@ -44,11 +44,11 @@ body {
 .initial-hide {
   display: none;
 }
-canvas {
+#stage {
   opacity: 0;
 }
 
-canvas.on {
+#stage.on {
   opacity: 1;
   transition: opacity 3s ease-in-out;
 }

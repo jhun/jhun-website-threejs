@@ -7,7 +7,7 @@ import cssStyle from "./css/style.scss";
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 // prettier-ignore
-import { camera, scene, renderer, controls} from "./cameraSceneRenderer.js";
+import { camera, scene, renderer, controls, musicHome} from "./cameraSceneRenderer.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
@@ -40,6 +40,7 @@ let composer;
 let pixelRatio = renderer.getPixelRatio();
 let particles;
 let floor;
+let visivel = true;
 
 init();
 animate();
@@ -49,7 +50,7 @@ function init() {
   stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
   status = document.createElement("div");
 
-  document.body.appendChild(status);
+  // document.body.appendChild(status);
   // geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
   // var material = new THREE.MeshBasicMaterial({
   //   color: 0x44ffff,
@@ -141,26 +142,31 @@ function init() {
 }
 
 function animate() {
-  renderer.clear();
   requestAnimationFrame(animate);
-  horse.updateAnimal();
-  fox.updateAnimal();
-  wolf.updateAnimal();
-  panther.updateAnimal();
-  bear.updateAnimal();
-  eagle.updateAnimal();
-  vulture.updateAnimal();
-  // frog.updateAnimal();
-  aligator.updateAnimal();
-  // meshRoot.rotation.x += 0.01;
-  // meshRoot.rotation.y += 0.02;
-  particles.updateParticles();
-  floor.update();
-  updateLights();
-  controls.update();
-  composer.render();
-  stats.update();
-  // renderer.render(scene, camera);
+  if (visivel) {
+    // if (typeof musicHome != "undefined") {
+    //   musicHome.playSound();
+    // }
+    renderer.clear();
+    horse.updateAnimal();
+    fox.updateAnimal();
+    wolf.updateAnimal();
+    panther.updateAnimal();
+    bear.updateAnimal();
+    eagle.updateAnimal();
+    vulture.updateAnimal();
+    // frog.updateAnimal();
+    aligator.updateAnimal();
+    // meshRoot.rotation.x += 0.01;
+    // meshRoot.rotation.y += 0.02;
+    particles.updateParticles();
+    floor.update();
+    updateLights();
+    controls.update();
+    composer.render();
+    stats.update();
+    // renderer.render(scene, camera);
+  }
 }
 
 window.onload = function () {
@@ -177,3 +183,23 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   pixelRatio = renderer.getPixelRatio();
 }
+
+document.addEventListener(
+  "visibilitychange",
+  (event) => {
+    if (document.hidden) {
+      visivel = false;
+      if (typeof musicHome != "undefined") {
+        musicHome.pauseSound();
+      }
+    } else {
+      visivel = true;
+      if (typeof musicHome != "undefined") {
+        musicHome.playSound();
+      }
+    }
+    // console.log(visivel);
+    // console.log(document.hidden);
+  },
+  false
+);

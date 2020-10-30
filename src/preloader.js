@@ -19,10 +19,12 @@ export default class Preloader {
   static instancesLoaded() {
     document.querySelector(
       "h1"
-    ).innerHTML = `${loaded} / ${this.instancesCount()} OBJECTS LOADED`;
+    ).innerHTML = `<div style="margin-top:-15px;">${loaded} / ${this.instancesCount()}<br/><div style="font-size:10px; margin-top:5px;"> OBJECTS LOADED</div></div>`;
     if (loaded == this.instancesCount()) {
       setTimeout(() => {
-        document.querySelector("h1").innerHTML = "START HERE";
+        document.querySelector(
+          "h1"
+        ).innerHTML = `<div style="display:inline-block; padding:0 0 3px 10px; border:1px solid white; text-align:center;">START HERE</div>`;
       }, 1000);
     }
   }

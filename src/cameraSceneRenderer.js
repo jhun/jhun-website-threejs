@@ -3,7 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import stranger from "./sounds/stranger-things-theme-song.ogg";
 import LoadSound from "./sound.js";
 
-export var camera, scene, renderer, controls;
+export var camera, scene, renderer, controls, musicHome;
 
 let orbitEnded = true;
 let posCameraInit = new THREE.Vector3(0.0, 0.0, 10.0);
@@ -36,18 +36,15 @@ renderer.autoClear = false; // important!
 // renderer.setClearColor(0x000000, 0.1);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.domElement.id = "stage";
 
 document.body.appendChild(renderer.domElement);
 
-var musicHome = new LoadSound(scene, camera, stranger);
-
 const initOrbit = (pos, rot) => {
   orbitEnded = false;
-  console.log("inited");
-  if (!musicHome.sound.isPlaying && musicHome.canPlay) {
+  if (typeof musicHome == "undefined") {
+    musicHome = new LoadSound(scene, camera, stranger);
     document.querySelector("h1").innerHTML = "JHUN KUSANO";
-    musicHome.sound.pause();
-    musicHome.sound.play();
     document.querySelector("canvas").classList.add("on");
     document.getElementsByClassName("menu-home")[0].classList.add("on");
   }
