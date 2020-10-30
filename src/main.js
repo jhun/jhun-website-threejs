@@ -31,6 +31,7 @@ import gltfEagle from "./models/life_soup/birdsA_eagle.gltf";
 import gltfVulture from "./models/black_soup/birds_vulture.gltf";
 // import gltfFrog from "./models/life_soup/quadruped_frog.gltf";
 import gltfAligator from "./models/black_soup/alligator.gltf";
+import { LogLuvEncoding } from "three";
 
 let status, stats;
 let geometry, material, meshRoot;
@@ -163,8 +164,8 @@ function animate() {
 }
 
 window.onload = function () {
-  console.log("DOM loaded");
   document.querySelector("body").classList.remove("initial-hide");
+  document.querySelector("h1").innerHTML = "";
 };
 
 window.addEventListener("resize", onWindowResize, false);
@@ -175,8 +176,4 @@ function onWindowResize() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   pixelRatio = renderer.getPixelRatio();
-  fxaaPass.uniforms["resolution"].value.x =
-    1 / (window.innerWidth * pixelRatio);
-  fxaaPass.uniforms["resolution"].value.y =
-    1 / (window.innerHeight * pixelRatio);
 }

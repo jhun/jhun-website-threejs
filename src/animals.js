@@ -2,6 +2,7 @@ import * as THREE from "three";
 import GLTFLoader from "three-gltf-loader";
 import { Mesh } from "three";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
+import Preloader from "./preloader.js";
 
 export default class LoadGLTF {
   constructor(
@@ -19,6 +20,7 @@ export default class LoadGLTF {
     yRotationInverted,
     inverted
   ) {
+    Preloader.instanceAdded();
     this.scene = scene;
     this.camera = camera;
     this.resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
@@ -158,7 +160,12 @@ export default class LoadGLTF {
       },
       (xhr) => {
         // called while loading is progressing
-        console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
+        let percentage = Math.floor((xhr.loaded / xhr.total) * 100);
+        if (percentage === 100) {
+          Preloader.instanceLoaded(); //add
+          Preloader.instancesLoaded(); //check
+        }
+        // console.log(`${percentage}% loaded`);
       },
       (error) => {
         // called when loading has errors
@@ -196,7 +203,8 @@ export default class LoadGLTF {
               }
             }
             this.modelTrail[i].position.x =
-              this.modelTrail[i].position.x - i * 0.001;
+              this.modelTrail[i].position.x -
+              i * (1 - this.velocityMoviment) * 0.003;
           });
         } else if (this.indice[i] > 10 * i && this.indice[i] <= 11 * i) {
           this.indice[i] += 0.5;

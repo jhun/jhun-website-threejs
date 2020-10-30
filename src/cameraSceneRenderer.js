@@ -43,6 +43,7 @@ var musicHome = new LoadSound(scene, camera, stranger);
 
 const initOrbit = (pos, rot) => {
   orbitEnded = false;
+  console.log("inited");
   if (!musicHome.sound.isPlaying && musicHome.canPlay) {
     document.querySelector("h1").innerHTML = "JHUN KUSANO";
     musicHome.sound.pause();
@@ -78,8 +79,8 @@ controls.enablePan = false;
 controls.enableZoom = false;
 controls.enableDamping = true;
 controls.minPolarAngle = 0.8;
-controls.maxPolarAngle = 10.4;
+controls.maxPolarAngle = 1.77;
 controls.dampingFactor = 0.07;
 controls.rotateSpeed = 0.17;
-controls.addEventListener("start", initOrbit, true);
-controls.addEventListener("end", endOrbit, true);
+controls.addEventListener("start", initOrbit, false);
+controls.addEventListener("end", endOrbit, false);

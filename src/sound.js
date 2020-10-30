@@ -1,7 +1,9 @@
 import * as THREE from "three";
+import Preloader from "./preloader.js";
 
 export default class LoadSound {
   constructor(camera, scene, music) {
+    Preloader.instanceAdded();
     this.canPlay = false;
     this.listener = new THREE.AudioListener();
     this.sound = new THREE.Audio(this.listener);
@@ -17,14 +19,12 @@ export default class LoadSound {
         scene.add(this.sound);
       }, // onProgress callback
       (xhr) => {
-        if ((xhr.loaded / xhr.total) * 100 == 100) {
-          setTimeout(() => {
-            this.canPlay = true;
-            document.querySelector("h1").innerHTML = "START HERE";
-          }, 1000);
+        let loaded = Math.floor((xhr.loaded / xhr.total) * 100);
+        if (loaded === 100) {
+          this.canPlay = true;
+          Preloader.instanceLoaded(); //add
+          Preloader.instancesLoaded(); //check
         }
-        document.querySelector("h1").innerHTML =
-          Math.floor((xhr.loaded / xhr.total) * 100) + "% loaded";
       },
       (err) => {
         console.log("An error happened");
