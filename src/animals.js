@@ -141,7 +141,6 @@ export default class LoadGLTF {
           this.container.add(this.model.scene);
           this.container.add(this.modelTrail[i]);
         }
-
         this.scene.add(this.container);
 
         // Play a specific animation

@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import { Reflector } from "three/examples/jsm/objects/Reflector";
 
-import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "three.meshline";
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "threejs-meshline";
 
 export default class Floors {
   constructor(scene, camera) {
     this.scene = scene;
     this.camera = camera;
-    this.geometry = new THREE.PlaneGeometry(160, 80, 80, 80);
+    this.geometry = new THREE.PlaneGeometry(150, 300, 150, 150);
     this.line = new MeshLine();
     // line.setGeometry( geometry );
     this.line.setGeometry(this.geometry, function (p) {
@@ -36,7 +36,6 @@ export default class Floors {
     this.plane.position.z = -20;
     this.plane.position.y = -2.0;
     this.plane.rotation.x = Math.PI / 2;
-
     this.scene.add(this.plane);
 
     this.horizontalMirror = new Reflector(this.geometry, {
@@ -50,7 +49,6 @@ export default class Floors {
     this.horizontalMirror.position.z = -20;
     this.horizontalMirror.position.y = -2.02;
     this.horizontalMirror.rotation.x = -Math.PI / 2;
-
     this.scene.add(this.horizontalMirror);
   }
   update() {

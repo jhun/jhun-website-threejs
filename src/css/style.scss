@@ -34,6 +34,7 @@
 // }
 
 body {
+  pointer-events: none;
   width: 100vw;
   @include vh-fix(height);
   overflow: hidden;
@@ -80,7 +81,7 @@ section {
   display: block;
   // background-color: yellow;
   margin: 0;
-  padding: 0 0 0 7px;
+  padding: 0 0 0 0px;
   user-select: none;
   height: 40px;
 }
@@ -97,7 +98,7 @@ section {
   width: 100%;
   // background-color: yellowgreen;
   list-style: none;
-  margin: 0 0 0 0px;
+  margin: 10px 0 0 0;
   padding: 0;
   user-select: none;
   transition: all 3s 3s ease-in-out;

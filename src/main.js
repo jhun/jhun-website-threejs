@@ -8,18 +8,14 @@ import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 // prettier-ignore
 import { camera, scene, renderer, controls, musicHome} from "./cameraSceneRenderer.js";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-import { GlitchPass } from "three/examples/jsm/postprocessing/Glitchpass";
-import { AfterimagePass } from "three/examples/jsm/postprocessing/AfterimagePass.js";
-import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
+
+import ComposerEffects from "./composer.js";
 
 import ParticlesEnvironment from "./ParticlesEnvironment.js";
 import { updateLights } from "./lights.js";
 import LoadGLTF from "./animals.js";
 import Floors from "./Floors.js";
+import Rays from "./rays.js";
 
 // GLTF MODELS
 import gltfCavalo from "./models/life_soup/quadruped_horse.gltf";
@@ -31,15 +27,15 @@ import gltfEagle from "./models/life_soup/birdsA_eagle.gltf";
 import gltfVulture from "./models/black_soup/birds_vulture.gltf";
 // import gltfFrog from "./models/life_soup/quadruped_frog.gltf";
 import gltfAligator from "./models/black_soup/alligator.gltf";
-import { LogLuvEncoding } from "three";
+import { LogLuvEncoding, Ray } from "three";
 
 let status, stats;
 let geometry, material, meshRoot;
 let horse, fox, panther, wolf, bear, eagle, vulture, frog, aligator;
-let composer;
-let pixelRatio = renderer.getPixelRatio();
+let composerEffects;
 let particles;
 let floor;
+let rays;
 let visivel = true;
 
 init();
@@ -73,23 +69,23 @@ function init() {
   */
 
   // prettier-ignore
-  horse = new LoadGLTF(gltfCavalo, scene, camera,  0.0318, 18, 1, -7, -4.1, 70, 600, -11,false, false);
+  horse = new LoadGLTF(gltfCavalo, scene, camera,  0.0318, 18, 1, -7, -4.1, 150, 600, -11,false, false);
   // prettier-ignore
-  fox = new LoadGLTF(gltfFox, scene, camera, 0.0348, 15, 1, -30, -2.7, 70, 600, -5,false, true);
+  fox = new LoadGLTF(gltfFox, scene, camera, 0.0348, 15, 1, -30, -2.7, 150, 600, -5,false, true);
   // prettier-ignore
-  wolf = new LoadGLTF(gltfWolf, scene, camera, 0.0348, 19, 1, 0, -3.8, 70, 600, -8,false, true);
+  wolf = new LoadGLTF(gltfWolf, scene, camera, 0.0348, 19, 1, 0, -3.8, 150, 600, -8,false, true);
   // prettier-ignore
   panther = new LoadGLTF(gltfPanther, scene, camera, 0.0348, 30, 1, 90, -4.9, 150, 600, -13,false, true);
   // prettier-ignore
-  bear = new LoadGLTF(gltfBear, scene, camera, 0.0278, 15, 0.7, -30, -2.2, 70, 600, -2,false, true);
+  bear = new LoadGLTF(gltfBear, scene, camera, 0.0278, 15, 0.7, -30, -2.2, 150, 600, -2,false, true);
   // prettier-ignore
-  eagle = new LoadGLTF(gltfEagle, scene, camera, 0.0318, 14, 1, -6, 5.0, 70, 600, -17,false, true);
+  eagle = new LoadGLTF(gltfEagle, scene, camera, 0.0318, 14, 1, -6, 5.0, 150, 600, -17,false, true);
   // prettier-ignore
-  vulture = new LoadGLTF(gltfVulture, scene, camera, 0.0318, 12, .7, -4, 3.0, 70, 600, -20,false, true);
+  vulture = new LoadGLTF(gltfVulture, scene, camera, 0.0318, 12, .7, -4, 3.0, 150, 600, -20,false, true);
   // prettier-ignore
-  // frog = new LoadGLTF(gltfFrog, scene, camera, 0.0318, 12, 0.5, -13, -1.2, 70, 600, 2,false, true);
+  // frog = new LoadGLTF(gltfFrog, scene, camera, 0.0318, 12, 0.5, -13, -1.2, 150, 600, 2,false, true);
   // prettier-ignore
-  aligator = new LoadGLTF(gltfAligator, scene, camera, 0.0318, 9, 0.5, -26, -6.0, 70, 600, -21, true, true);
+  aligator = new LoadGLTF(gltfAligator, scene, camera, 0.0318, 9, 0.5, -26, -6.0, 150, 600, -21, true, true);
   // prettier-ignore-end
 
   // meshRoot = new THREE.Mesh(geometry, material);
@@ -102,42 +98,28 @@ function init() {
   //FLOOR
   floor = new Floors(scene, camera);
 
-  var renderPass = new RenderPass(scene, camera);
+  //BOX MENU
 
-  var bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight),
-    1.5,
-    0.4,
-    0.85
-  );
-  bloomPass.threshold = 0.31;
-  bloomPass.strength = 1.2;
-  bloomPass.radius = 0.55;
-  bloomPass.renderToScreen = true;
+  var geometryBoxLine = new THREE.BoxGeometry(2.8, 1, 0.2, 1, 1);
+  const materialLine = new THREE.LineBasicMaterial({
+    color: 0xffffff,
+    linewidth: 0.1,
+    linecap: "round", //ignored by WebGLRenderer
+    linejoin: "round", //ignored by WebGLRenderer
+  });
+  var geoEdge = new THREE.EdgesGeometry(geometryBoxLine);
+  var wireframeBox = new THREE.LineSegments(geoEdge, materialLine);
+  wireframeBox.position.y = 0.55;
+  // scene.add(wireframeBox);
 
-  var afterimagePass = new AfterimagePass(0.6);
+  //RAYS
 
-  var glitchPass = new GlitchPass();
-  glitchPass.curF = 0;
-  glitchPass.renderToScreen = true;
+  rays = new Rays(25, scene, camera);
 
-  var fxaaPass = new ShaderPass(FXAAShader);
+  //COMPOSER
+  composerEffects = new ComposerEffects(scene, camera, renderer);
 
-  fxaaPass.material.uniforms["resolution"].value.x =
-    1 / (window.innerWidth * pixelRatio);
-  fxaaPass.material.uniforms["resolution"].value.y =
-    1 / (window.innerHeight * pixelRatio);
-
-  composer = new EffectComposer(renderer);
-  composer.setSize(window.innerWidth, window.innerHeight);
-
-  composer.addPass(renderPass);
-  composer.addPass(fxaaPass);
-
-  // composer.addPass(afterimagePass);
-  composer.addPass(glitchPass);
-  composer.addPass(bloomPass);
-
+  //STATUS
   status.appendChild(stats.dom);
 }
 
@@ -161,9 +143,10 @@ function animate() {
     // meshRoot.rotation.y += 0.02;
     particles.updateParticles();
     floor.update();
-    updateLights();
+    rays.update();
+    // updateLights();
     controls.update();
-    composer.render();
+    composerEffects.render();
     stats.update();
     // renderer.render(scene, camera);
   }
@@ -181,7 +164,6 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  pixelRatio = renderer.getPixelRatio();
 }
 
 document.addEventListener(
