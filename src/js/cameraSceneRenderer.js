@@ -1,13 +1,18 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import stranger from "./sounds/stranger-things-theme-song.ogg";
-import LoadSound from "./sound.js";
 
-export var camera, scene, renderer, controls, musicHome;
+export let camera,
+  scene,
+  renderer,
+  controls,
+  posCameraInit,
+  orbitTarget,
+  lerpVal;
 
 let orbitEnded = true;
-let posCameraInit = new THREE.Vector3(0.0, 0.0, 10.0);
-let rotCameraInit = new THREE.Vector3(0.0, 0.0, 0.0);
+orbitTarget = new THREE.Vector3(-20.0, 0.0, 0.0);
+posCameraInit = new THREE.Vector3(0.0, 0.0, 10.0);
+lerpVal = new THREE.Vector2(0.1, 0.0);
 
 camera = new THREE.PerspectiveCamera(
   45,
@@ -42,14 +47,6 @@ document.body.appendChild(renderer.domElement);
 
 const initOrbit = (pos, rot) => {
   orbitEnded = false;
-  if (typeof musicHome == "undefined") {
-    musicHome = new LoadSound(scene, camera, stranger);
-    document.querySelector(
-      "h1"
-    ).innerHTML = `<div style="display:inline-block; padding:5 5 8px 18px; margin:-10px 0 0 0; border:1px solid white; text-align:center;">JHUN KUSANO</div>`;
-    document.querySelector("canvas").classList.add("on");
-    document.getElementsByClassName("menu-home")[0].classList.add("on");
-  }
 };
 
 const endOrbit = (pos, rot) => {
@@ -58,13 +55,15 @@ const endOrbit = (pos, rot) => {
 
 const updateEndOrbit = () => {
   if (orbitEnded) {
-    camera.position.x = lerp(camera.position.x, posCameraInit.x, 0.1);
-    camera.position.y = lerp(camera.position.y, posCameraInit.y, 0.1);
-    camera.position.z = lerp(camera.position.z, posCameraInit.z, 0.1);
-    // camera.rotation.x = lerp(camera.rotation.x, rotCameraInit.x, 0.1);
-    // camera.rotation.y = lerp(camera.rotation.y, rotCameraInit.y, 0.1);
-    // camera.rotation.z = lerp(camera.rotation.z, rotCameraInit.z, 0.1);
-    controls.target.set(-20, 0, 0);
+    camera.rotation.x = 0;
+    camera.rotation.y = 0;
+    camera.rotation.z = 0;
+    camera.position.x = lerp(camera.position.x, posCameraInit.x, 0.01);
+    camera.position.y = lerp(camera.position.y, posCameraInit.y, 0.01);
+    camera.position.z = lerp(camera.position.z, posCameraInit.z, 0.01);
+    controls.target.x = lerp(controls.target.x, orbitTarget.x, 0.01);
+    controls.target.y = lerp(controls.target.y, orbitTarget.y, 0.01);
+    controls.target.z = lerp(controls.target.z, orbitTarget.z, 0.01);
     controls.update();
   }
 };

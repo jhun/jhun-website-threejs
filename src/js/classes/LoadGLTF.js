@@ -2,7 +2,7 @@ import * as THREE from "three";
 import GLTFLoader from "three-gltf-loader";
 import { Mesh } from "three";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
-import Preloader from "./preloader.js";
+import Preloader from "./Preloader.js";
 
 export default class LoadGLTF {
   constructor(

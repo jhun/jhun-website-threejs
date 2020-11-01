@@ -7,15 +7,15 @@ import cssStyle from "./css/style.scss";
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 // prettier-ignore
-import { camera, scene, renderer, controls, musicHome} from "./cameraSceneRenderer.js";
+import { camera, scene, renderer, controls, orbitTarget, posCameraInit,  lerpVal} from "./js/cameraSceneRenderer.js";
 
-import ComposerEffects from "./composer.js";
+import ComposerEffects from "./js/classes/Composer.js";
 
-import ParticlesEnvironment from "./ParticlesEnvironment.js";
-import { updateLights } from "./lights.js";
-import LoadGLTF from "./animals.js";
-import Floors from "./Floors.js";
-import Rays from "./rays.js";
+import ParticlesEnvironment from "./js/classes/ParticlesEnvironment.js";
+import { updateLights } from "./js/lights.js";
+import LoadGLTF from "./js/classes/LoadGLTF.js";
+import Floors from "./js/classes/Floors.js";
+import Rays from "./js/classes/Rays.js";
 
 // GLTF MODELS
 import gltfCavalo from "./models/life_soup/quadruped_horse.gltf";
@@ -27,35 +27,42 @@ import gltfEagle from "./models/life_soup/birdsA_eagle.gltf";
 import gltfVulture from "./models/black_soup/birds_vulture.gltf";
 // import gltfFrog from "./models/life_soup/quadruped_frog.gltf";
 import gltfAligator from "./models/black_soup/alligator.gltf";
-import { LogLuvEncoding, Ray } from "three";
 
-let status, stats;
+//SOUNDS
+import stranger from "./sounds/stranger-things-theme-song.ogg";
+import LoadSound from "./js/classes/Sound.js";
+
+let stats;
+let showStatus = false;
 let geometry, material, meshRoot;
 let horse, fox, panther, wolf, bear, eagle, vulture, frog, aligator;
 let composerEffects;
 let particles;
 let floor;
 let rays;
-let visivel = true;
+let btsMenu;
+let menuHolder;
+let titulo;
+let musicHome;
 
-init();
-animate();
+const init = () => {
+  //STATUS
+  if (showStatus) {
+    stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
+  }
 
-function init() {
-  stats = new Stats();
-  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-  status = document.createElement("div");
+  //MENU
+  menuHolder = document.getElementsByClassName("menu-holder");
 
-  // document.body.appendChild(status);
-  // geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-  // var material = new THREE.MeshBasicMaterial({
-  //   color: 0x44ffff,
-  //   side: THREE.DoubleSide,
-  //   wireframe: true,
-  // });
+  //BUTTONS
+  btsMenu = document.getElementsByClassName("bt-menu");
 
   /* ANIMALS VALUES LIST
     gltfAnimal,
+    scene,
+    camera,
     scale,
     velocity,
     velocityMoviment,
@@ -86,71 +93,78 @@ function init() {
   // frog = new LoadGLTF(gltfFrog, scene, camera, 0.0318, 12, 0.5, -13, -1.2, 150, 600, 2,false, true);
   // prettier-ignore
   aligator = new LoadGLTF(gltfAligator, scene, camera, 0.0318, 9, 0.5, -26, -6.0, 150, 600, -21, true, true);
-  // prettier-ignore-end
 
-  // meshRoot = new THREE.Mesh(geometry, material);
-  // scene.add(meshRoot);
   // addPlaneCustomShader();
 
   //PARTICLES
-  particles = new ParticlesEnvironment(5000, scene);
+  particles = new ParticlesEnvironment(2000, scene);
 
   //FLOOR
   floor = new Floors(scene, camera);
 
   //BOX MENU
-
-  var geometryBoxLine = new THREE.BoxGeometry(2.8, 1, 0.2, 1, 1);
-  const materialLine = new THREE.LineBasicMaterial({
-    color: 0xffffff,
-    linewidth: 0.1,
-    linecap: "round", //ignored by WebGLRenderer
-    linejoin: "round", //ignored by WebGLRenderer
-  });
-  var geoEdge = new THREE.EdgesGeometry(geometryBoxLine);
-  var wireframeBox = new THREE.LineSegments(geoEdge, materialLine);
-  wireframeBox.position.y = 0.55;
+  // var geometryBoxLine = new THREE.BoxGeometry(2.8, 1, 0.2, 1, 1);
+  // const materialLine = new THREE.LineBasicMaterial({
+  //   color: 0xffffff,
+  //   linewidth: 0.1,
+  //   linecap: "round", //ignored by WebGLRenderer
+  //   linejoin: "round", //ignored by WebGLRenderer
+  // });
+  // var geoEdge = new THREE.EdgesGeometry(geometryBoxLine);
+  // var wireframeBox = new THREE.LineSegments(geoEdge, materialLine);
+  // wireframeBox.position.y = 0.55;
   // scene.add(wireframeBox);
 
   //RAYS
-
   rays = new Rays(25, scene, camera);
 
   //COMPOSER
   composerEffects = new ComposerEffects(scene, camera, renderer);
+};
 
-  //STATUS
-  status.appendChild(stats.dom);
-}
-
-function animate() {
+const animate = () => {
   requestAnimationFrame(animate);
-  if (visivel) {
-    // if (typeof musicHome != "undefined") {
-    //   musicHome.playSound();
-    // }
-    renderer.clear();
-    horse.updateAnimal();
-    fox.updateAnimal();
-    wolf.updateAnimal();
-    panther.updateAnimal();
-    bear.updateAnimal();
-    eagle.updateAnimal();
-    vulture.updateAnimal();
-    // frog.updateAnimal();
-    aligator.updateAnimal();
-    // meshRoot.rotation.x += 0.01;
-    // meshRoot.rotation.y += 0.02;
-    particles.updateParticles();
-    floor.update();
-    rays.update();
-    // updateLights();
-    controls.update();
-    composerEffects.render();
+
+  renderer.clear();
+
+  horse.updateAnimal();
+  fox.updateAnimal();
+  wolf.updateAnimal();
+  panther.updateAnimal();
+  bear.updateAnimal();
+  eagle.updateAnimal();
+  vulture.updateAnimal();
+  // frog.updateAnimal();
+  aligator.updateAnimal();
+
+  particles.updateParticles();
+
+  floor.update();
+
+  rays.update();
+
+  // updateLights();
+
+  controls.update();
+
+  composerEffects.render();
+  // renderer.render(scene, camera);
+  if (showStatus) {
     stats.update();
-    // renderer.render(scene, camera);
   }
-}
+};
+
+const menuClicked = (id) => {
+  console.log(id);
+  if (id == "bt-about") {
+    orbitTarget.x = -20;
+    orbitTarget.z = -10;
+    posCameraInit.x = -50;
+    posCameraInit.y = 20;
+    posCameraInit.z = -20;
+    menuHolder[0].classList.add("in");
+  }
+};
 
 window.onload = function () {
   document.querySelector("body").classList.remove("initial-hide");
@@ -170,18 +184,49 @@ document.addEventListener(
   "visibilitychange",
   (event) => {
     if (document.hidden) {
-      visivel = false;
       if (typeof musicHome != "undefined") {
         musicHome.pauseSound();
       }
     } else {
-      visivel = true;
       if (typeof musicHome != "undefined") {
         musicHome.playSound();
       }
     }
-    // console.log(visivel);
-    // console.log(document.hidden);
   },
   false
 );
+
+titulo = document.getElementById("title");
+titulo.addEventListener("click", (e) => {
+  if (e.target.innerHTML === "START HERE") {
+    if (typeof musicHome == "undefined") {
+      musicHome = new LoadSound(scene, camera, stranger);
+    }
+
+    e.target.innerHTML = `JHUN KUSANO`;
+
+    document.querySelector("canvas").classList.add("on");
+    document.getElementsByClassName("menu-home")[0].classList.add("on");
+    btsMenu = document.getElementsByClassName("bt-menu");
+
+    for (let i = 0; i < btsMenu.length; i++) {
+      btsMenu[i].addEventListener(
+        "click",
+        (e) => {
+          menuClicked(e.target.id);
+        },
+        false
+      );
+    }
+  } else if (e.target.innerHTML === "JHUN KUSANO") {
+    orbitTarget.x = -20;
+    orbitTarget.z = 0;
+    posCameraInit.x = 0;
+    posCameraInit.y = 0;
+    posCameraInit.z = 10;
+    menuHolder[0].classList.remove("in");
+  }
+});
+
+init();
+animate();

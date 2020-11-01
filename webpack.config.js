@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = _require("html-webpack-plugin");
 const path = require("path");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   devServer: {
     contentBase: "./dist",
     host: "0.0.0.0",
@@ -44,7 +44,7 @@ module.exports = {
         use: ["html-loader"],
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         use: {
           loader: "file-loader",
           options: {

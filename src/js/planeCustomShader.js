@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { vertexshader, fragmentshader } from "./glsl/shadernoise.js";
+import { vertexshader, fragmentshader } from "../glsl/shadernoise.js";
 import { sceneShader, cameraShader, renderer } from "./cameraSceneRenderer.js";
 import ocean from "./imagens/jhun.jpg";
 

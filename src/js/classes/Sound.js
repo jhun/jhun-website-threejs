@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Preloader from "./preloader.js";
+import Preloader from "./Preloader.js";
 
 export default class LoadSound {
   constructor(camera, scene, music) {
