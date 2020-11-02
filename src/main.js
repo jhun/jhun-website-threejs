@@ -7,7 +7,7 @@ import cssStyle from "./css/style.scss";
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 // prettier-ignore
-import { camera, scene, renderer, controls, orbitTarget, posCameraInit,  lerpVal} from "./js/cameraSceneRenderer.js";
+import { camera, scene, renderer, orbitTarget, posCameraInit, updateEndOrbit} from "./js/cameraSceneRenderer.js";
 
 import ComposerEffects from "./js/classes/Composer.js";
 
@@ -27,6 +27,10 @@ import gltfEagle from "./models/life_soup/birdsA_eagle.gltf";
 import gltfVulture from "./models/black_soup/birds_vulture.gltf";
 // import gltfFrog from "./models/life_soup/quadruped_frog.gltf";
 import gltfAligator from "./models/black_soup/alligator.gltf";
+import gltfShark from "./models/shark.gltf";
+import gltfWhale from "./models/whale.gltf";
+import gltfOctopus from "./models/octopus.gltf";
+// import gltfFish from "./models/life_soup/fishA.gltf";
 
 //SOUNDS
 import stranger from "./sounds/stranger-things-theme-song.ogg";
@@ -35,7 +39,20 @@ import LoadSound from "./js/classes/Sound.js";
 let stats;
 let showStatus = false;
 let geometry, material, meshRoot;
-let horse, fox, panther, wolf, bear, eagle, vulture, frog, aligator;
+let horse,
+  fox,
+  panther,
+  wolf,
+  bear,
+  eagle,
+  vulture,
+  frog,
+  aligator,
+  shark,
+  whale,
+  octopus;
+// fish = new Array(1);
+
 let composerEffects;
 let particles;
 let floor;
@@ -44,6 +61,9 @@ let btsMenu;
 let menuHolder;
 let titulo;
 let musicHome;
+let lowpass = 1000;
+let Q = 0;
+let gain = 0.5;
 
 const init = () => {
   //STATUS
@@ -72,7 +92,8 @@ const init = () => {
     distortion,
     zPos,
     yRotationInverted,
-    inverted
+    inverted,
+    oceanCreature
   */
 
   // prettier-ignore
@@ -92,7 +113,17 @@ const init = () => {
   // prettier-ignore
   // frog = new LoadGLTF(gltfFrog, scene, camera, 0.0318, 12, 0.5, -13, -1.2, 150, 600, 2,false, true);
   // prettier-ignore
-  aligator = new LoadGLTF(gltfAligator, scene, camera, 0.0318, 9, 0.5, -26, -6.0, 150, 600, -21, true, true);
+  aligator = new LoadGLTF(gltfAligator, scene, camera, 0.0318, 11, 0.6, -26, -6.0, 150, 600, -21, true, true);
+  // prettier-ignore
+  shark = new LoadGLTF(gltfShark, scene, camera, 0.0518, 18, 1.5, -10, -32.0, 200, 600, -21, true, true, true);
+  // prettier-ignore
+  whale = new LoadGLTF(gltfWhale, scene, camera, 0.0518, 13, 1, -100, -48.0, 200, 600, -21, true, true, true);
+  // prettier-ignore
+  octopus = new LoadGLTF(gltfOctopus, scene, camera, 0.0518, 14, 1.5, 100, -32.0, 250, 600, -21, true, true, true);
+  // prettier-ignore
+  // for (let i=0; i< fish.length;i++){
+  //   fish[i] = new LoadGLTF(gltfFish, scene, camera, randomFloatFromInterval(0.0018,0.0178 ),randomFloatFromInterval(5, 12),randomFloatFromInterval(0.2, 1.0), randomFloatFromInterval(-150, 145), randomFloatFromInterval(-80, -20), 150, 600, randomFloatFromInterval(-40, 10), false, true, true);
+  // }
 
   // addPlaneCustomShader();
 
@@ -127,6 +158,14 @@ const animate = () => {
 
   renderer.clear();
 
+  particles.updateParticles();
+
+  floor.update();
+
+  // updateLights();
+
+  updateEndOrbit();
+
   horse.updateAnimal();
   fox.updateAnimal();
   wolf.updateAnimal();
@@ -137,15 +176,25 @@ const animate = () => {
   // frog.updateAnimal();
   aligator.updateAnimal();
 
-  particles.updateParticles();
-
-  floor.update();
-
-  rays.update();
-
-  // updateLights();
-
-  controls.update();
+  if (typeof musicHome != "undefined") {
+    if (camera.position.y < -2) {
+      lowpass = 150;
+      Q = 15;
+      gain = 1;
+      shark.updateAnimal();
+      whale.updateAnimal();
+      octopus.updateAnimal();
+      // for (let i = 0; i < fish.length; i++) {
+      //   fish[i].updateAnimal();
+      // }
+    } else {
+      lowpass = 2000;
+      Q = 0;
+      gain = 0.5;
+      rays.update();
+    }
+    musicHome.changeLowpass(lowpass, Q, gain);
+  }
 
   composerEffects.render();
   // renderer.render(scene, camera);
@@ -158,12 +207,57 @@ const menuClicked = (id) => {
   console.log(id);
   if (id == "bt-about") {
     orbitTarget.x = -20;
+    orbitTarget.y = 0;
     orbitTarget.z = -10;
     posCameraInit.x = -50;
     posCameraInit.y = 20;
     posCameraInit.z = -20;
+    rays.colorR = 1;
+    rays.colorG = 1;
+    rays.colorB = 1;
     menuHolder[0].classList.add("in");
+    floor.sunColor = new THREE.Color(0.6, 0.6, 0.8);
+  } else if (id == "bt-works") {
+    orbitTarget.x = 30;
+    orbitTarget.y = 45;
+    orbitTarget.z = 0;
+    posCameraInit.x = -20;
+    posCameraInit.y = 45;
+    posCameraInit.z = 10;
+    rays.colorR = 0.7;
+    rays.colorG = 0.2;
+    rays.colorB = 0.1;
+    menuHolder[0].classList.add("in");
+    floor.sunColor = new THREE.Color(1, 0.1, 0);
+  } else if (id == "bt-lab") {
+    orbitTarget.x = -18;
+    orbitTarget.y = -50;
+    orbitTarget.z = 0;
+    posCameraInit.x = 0;
+    posCameraInit.y = -50;
+    posCameraInit.z = 10;
+    rays.colorR = 1;
+    rays.colorG = 1;
+    rays.colorB = 1;
+    menuHolder[0].classList.add("in");
+    floor.sunColor = new THREE.Color(1, 0.1, 0);
+  } else if (id == "bt-contact") {
+    orbitTarget.x = 400;
+    orbitTarget.y = 125;
+    orbitTarget.z = 0;
+    posCameraInit.x = 300;
+    posCameraInit.y = 125;
+    posCameraInit.z = 0;
+    rays.colorR = 1;
+    rays.colorG = 1;
+    rays.colorB = 1;
+    menuHolder[0].classList.add("in");
+    floor.sunColor = new THREE.Color(1, 0.1, 0);
   }
+};
+
+const randomFloatFromInterval = (min, max) => {
+  return Math.random() * (max - min) + min;
 };
 
 window.onload = function () {
@@ -220,11 +314,16 @@ titulo.addEventListener("click", (e) => {
     }
   } else if (e.target.innerHTML === "JHUN KUSANO") {
     orbitTarget.x = -20;
+    orbitTarget.y = 0;
     orbitTarget.z = 0;
     posCameraInit.x = 0;
     posCameraInit.y = 0;
     posCameraInit.z = 10;
     menuHolder[0].classList.remove("in");
+    rays.colorR = 1;
+    rays.colorG = 1;
+    rays.colorB = 1;
+    floor.sunColor = new THREE.Color(1, 0.1, 0);
   }
 });
 

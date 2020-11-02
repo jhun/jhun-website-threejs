@@ -12,6 +12,9 @@ export default class Rays {
     this.velocityBox = new Array(this.amount);
     this.borderSizeBox = new Array(this.amount);
     this.meshBox = new Array(this.amount);
+    this.colorR = 1;
+    this.colorG = 1;
+    this.colorB = 1;
 
     for (let i = 0; i < amount; i++) {
       this.velocityBox[i] = this.randomIntFromInterval(50, 200);
@@ -25,7 +28,7 @@ export default class Rays {
       );
       this.materialBox[i] = new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        side: THREE.FrontSide,
+        side: THREE.DoubleSide,
       });
       this.meshBox[i] = new THREE.Mesh(
         this.geometryBox[i],
@@ -41,12 +44,31 @@ export default class Rays {
   update() {
     let delta = this.clockRays.getDelta();
     for (let i = 0; i < this.amount; i++) {
+      this.materialBox[i].color.r = this.lerp(
+        this.materialBox[i].color.r,
+        this.colorR,
+        0.1
+      );
+      this.materialBox[i].color.g = this.lerp(
+        this.materialBox[i].color.g,
+        this.colorG,
+        0.1
+      );
+      this.materialBox[i].color.b = this.lerp(
+        this.materialBox[i].color.b,
+        this.colorB,
+        0.01
+      );
       this.meshBox[i].position.x -= delta * this.velocityBox[i];
 
       if (this.meshBox[i].position.x <= -190) {
         this.meshBox[i].position.x = 190;
       }
     }
+  }
+
+  lerp(start, end, amt) {
+    return (1 - amt) * start + amt * end;
   }
 
   randomIntFromInterval(min, max) {

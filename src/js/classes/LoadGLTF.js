@@ -18,7 +18,8 @@ export default class LoadGLTF {
     distortion,
     zPos,
     yRotationInverted,
-    inverted
+    inverted,
+    oceanCreature = false
   ) {
     Preloader.instanceAdded();
     this.scene = scene;
@@ -47,6 +48,7 @@ export default class LoadGLTF {
     this.distortion = distortion;
     this.yRotationInverted = yRotationInverted;
     this.inverted = inverted;
+    this.oceanCreature = oceanCreature;
     this.mesh;
     this.pointsMaterial;
     this.disabled = false;
@@ -54,7 +56,7 @@ export default class LoadGLTF {
     this.loaderAnimal.load(
       gltfAnimal,
       (gltf) => {
-        this.durationTrail = this.randomIntFromInterval(40, 70);
+        this.durationTrail = this.randomIntFromInterval(60, 90);
         this.model = gltf;
         for (let i = 0; i < this.modelTrail.length; i++) {
           this.modelTrail[i] = SkeletonUtils.clone(this.model.scene);
@@ -148,14 +150,13 @@ export default class LoadGLTF {
         for (let i = 0; i < this.mixerTrail.length; i++) {
           this.mixerTrail[i] = new THREE.AnimationMixer(this.modelTrail[i]);
         }
-
-        this.model.animations.forEach((clip) => {
-          // console.log(clip);
-          this.mixer.clipAction(clip).play();
+        for (let i = 0; i < this.model.animations.length; i++) {
+          // console.log(this.model.animations[0]);
+          this.mixer.clipAction(this.model.animations[0]).play();
           for (let i = 0; i < this.mixerTrail.length; i++) {
-            this.mixerTrail[i].clipAction(clip).play();
+            this.mixerTrail[i].clipAction(this.model.animations[0]).play();
           }
-        });
+        }
       },
       (xhr) => {
         // called while loading is progressing
@@ -185,9 +186,9 @@ export default class LoadGLTF {
           for (let i = 0; i < this.indice.length; i++) {
             this.indice[i] = 0;
           }
-          this.durationTrail = this.randomIntFromInterval(40, 70);
+          this.durationTrail = this.randomIntFromInterval(60, 90);
         } else if (
-          this.indice[i] > 11 * i &&
+          this.indice[i] > 21 * i &&
           this.indice[i] <= this.durationTrail * i
         ) {
           this.indice[i] += 0.5;
@@ -199,13 +200,16 @@ export default class LoadGLTF {
               if (child.children[0].material.opacity <= 0) {
                 child.visible = false;
                 this.modelTrail[i].position.x = this.model.scene.position.x;
+              } else {
+                this.modelTrail[i].position.x =
+                  this.modelTrail[i].position.x +
+                  (this.delta * this.velocity) / 15;
               }
             }
-            this.modelTrail[i].position.x =
-              this.modelTrail[i].position.x -
-              i * (1 - this.velocityMoviment) * 0.003;
+
+            // i * (1 - this.velocityMoviment) * 0.003;
           });
-        } else if (this.indice[i] > 10 * i && this.indice[i] <= 11 * i) {
+        } else if (this.indice[i] > 20 * i && this.indice[i] <= 21 * i) {
           this.indice[i] += 0.5;
           this.mixerTrail[i].setTime(this.mixer.time);
           this.modelTrail[i].position.x = this.model.scene.position.x;
@@ -232,6 +236,23 @@ export default class LoadGLTF {
         this.model.scene.position.x += this.delta * this.velocity;
       } else {
         this.model.scene.position.x = -this.limitPositionAnimals;
+
+        if (this.oceanCreature) {
+          let randomZ = this.randomIntFromInterval(-40, 10);
+          this.model.scene.position.z = randomZ;
+          let randomY = this.randomIntFromInterval(-80, -20);
+          this.model.scene.position.y = randomY;
+          for (let i = 0; i < this.modelTrail.length; i++) {
+            this.modelTrail[i].position.y = randomY;
+            this.modelTrail[i].position.z = randomZ;
+          }
+        } else {
+          let randomZ = this.randomIntFromInterval(-21, 0);
+          this.model.scene.position.z = randomZ;
+          for (let i = 0; i < this.modelTrail.length; i++) {
+            this.modelTrail[i].position.z = randomZ;
+          }
+        }
       }
     }
   }

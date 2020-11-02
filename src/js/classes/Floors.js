@@ -2,12 +2,26 @@ import * as THREE from "three";
 import { Reflector } from "three/examples/jsm/objects/Reflector";
 
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "threejs-meshline";
+import { DoubleSide } from "three";
 
 export default class Floors {
   constructor(scene, camera) {
     this.scene = scene;
     this.camera = camera;
-    this.geometry = new THREE.PlaneGeometry(150, 300, 150, 150);
+    this.sunColor = new THREE.Color(1, 0.1, 0);
+    //SUN
+    this.geometrySun = new THREE.SphereGeometry(30, 32, 32);
+    this.materialSun = new THREE.MeshBasicMaterial({
+      color: this.sunColor,
+      fog: false,
+      side: DoubleSide,
+    });
+    this.sun = new THREE.Mesh(this.geometrySun, this.materialSun);
+    this.sun.position.x = 300;
+    this.sun.position.y = 100;
+    this.scene.add(this.sun);
+
+    this.geometry = new THREE.PlaneGeometry(200, 300, 150, 150);
     this.line = new MeshLine();
     // line.setGeometry( geometry );
     this.line.setGeometry(this.geometry, function (p) {
@@ -42,7 +56,7 @@ export default class Floors {
       clipBias: 0.003,
       textureWidth: 1024 * window.devicePixelRatio,
       textureHeight: 1024 * window.devicePixelRatio,
-      color: new THREE.Color(0, 0, 0.3, 0),
+      color: new THREE.Color(0, 0, 0.5, 0),
       transparent: true,
       recursion: 1,
     });
@@ -51,8 +65,26 @@ export default class Floors {
     this.horizontalMirror.rotation.x = -Math.PI / 2;
     this.scene.add(this.horizontalMirror);
   }
+  lerp(start, end, amt) {
+    return (1 - amt) * start + amt * end;
+  }
   update() {
     let delta = this.clockPlane.getDelta();
     this.plane.rotation.z += delta * Math.PI * 0.05;
+    this.materialSun.color.r = this.lerp(
+      this.materialSun.color.r,
+      this.sunColor.r,
+      0.01
+    );
+    this.materialSun.color.g = this.lerp(
+      this.materialSun.color.g,
+      this.sunColor.g,
+      0.01
+    );
+    this.materialSun.color.b = this.lerp(
+      this.materialSun.color.b,
+      this.sunColor.b,
+      0.01
+    );
   }
 }

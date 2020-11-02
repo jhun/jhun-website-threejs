@@ -53,7 +53,7 @@ const endOrbit = (pos, rot) => {
   orbitEnded = true;
 };
 
-const updateEndOrbit = () => {
+export const updateEndOrbit = () => {
   if (orbitEnded) {
     camera.rotation.x = 0;
     camera.rotation.y = 0;
@@ -64,11 +64,9 @@ const updateEndOrbit = () => {
     controls.target.x = lerp(controls.target.x, orbitTarget.x, 0.01);
     controls.target.y = lerp(controls.target.y, orbitTarget.y, 0.01);
     controls.target.z = lerp(controls.target.z, orbitTarget.z, 0.01);
-    controls.update();
   }
+  controls.update();
 };
-
-setInterval(updateEndOrbit, 1000 / 60);
 
 function lerp(start, end, amt) {
   return (1 - amt) * start + amt * end;
