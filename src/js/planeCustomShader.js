@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { vertexshader, fragmentshader } from "../glsl/shadernoise.js";
-import { sceneShader, cameraShader, renderer } from "./cameraSceneRenderer.js";
-import ocean from "./imagens/jhun.jpg";
+import { scene, camera, renderer } from "./cameraSceneRenderer.js";
+import foto from "../imagens/jhun.jpg";
 
 let sceneObjects = [];
 let mesh;
@@ -17,9 +17,9 @@ const canvas = document.body;
 
 export const addPlaneCustomShader = () => {
   clock = new THREE.Clock();
-  let vFOV = THREE.MathUtils.degToRad(cameraShader.fov); // convert vertical fov to radians
+  let vFOV = THREE.MathUtils.degToRad(camera.fov); // convert vertical fov to radians
   let height = 2 * Math.tan(vFOV / 2) * 1000; // visible height
-  let width = height * cameraShader.aspect;
+  let width = height * camera.aspect;
   let geometry = new THREE.PlaneGeometry(width, height, 10, 10);
   uniforms = THREE.UniformsUtils.merge([
     THREE.UniformsLib["lights"],
@@ -33,7 +33,7 @@ export const addPlaneCustomShader = () => {
   };
   uniforms.uMouse = { value: new THREE.Vector4() };
   uniforms.uTime = { value: 0.0 };
-  uniforms.uTexture = { value: new THREE.TextureLoader().load(ocean) };
+  uniforms.uTexture = { value: new THREE.TextureLoader().load(foto) };
   material = new THREE.ShaderMaterial({
     vertexShader: vertexshader,
     fragmentShader: fragmentshader,
@@ -48,7 +48,7 @@ export const addPlaneCustomShader = () => {
   });
   mesh = new THREE.Mesh(geometry, material);
   mesh.position.x = 0;
-  sceneShader.add(mesh);
+  scene.add(mesh);
   // sceneObjects.push(mesh);
 };
 

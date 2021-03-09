@@ -17,10 +17,9 @@ lerpVal = new THREE.Vector2(0.1, 0.0);
 camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
-  0.01,
-  10000
+  0.1,
+  1000000
 );
-camera.position.z = -10;
 
 scene = new THREE.Scene();
 {
@@ -30,6 +29,7 @@ scene = new THREE.Scene();
   scene.fog = new THREE.Fog(color, near, far);
   scene.background = new THREE.Color(color);
 }
+scene.add(camera);
 
 renderer = new THREE.WebGLRenderer({
   antialias: true,

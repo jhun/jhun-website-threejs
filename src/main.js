@@ -3,6 +3,9 @@ import cssNormalize from "./css/base/normalize.css";
 import "./css/fonts.css";
 import cssStyle from "./css/style.scss";
 
+//routers
+import { navigation } from "./js/routers.js";
+
 //IMPORTS
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
@@ -33,8 +36,12 @@ import gltfOctopus from "./models/octopus.gltf";
 // import gltfFish from "./models/life_soup/fishA.gltf";
 
 //SOUNDS
-import stranger from "./sounds/stranger-things-theme-song.ogg";
+import stranger from "./sounds/theme-jhun.ogg";
 import LoadSound from "./js/classes/Sound.js";
+
+//SHADERS
+import { vertexShader, fragmentShader } from "./glsl/photoShader.js";
+import foto from "./imagens/jhun.jpg";
 
 let stats;
 let showStatus = false;
@@ -65,12 +72,155 @@ let lowpass = 1000;
 let Q = 0;
 let gain = 0.5;
 
+let materialFoto;
+let geometryFoto;
+let meshFoto;
+let boxFoto;
+let posZFoto;
+const center = new THREE.Vector3();
+let uniformsFoto;
+let clock = new THREE.Clock();
+
+window.currentSection = "";
+
+window.checkCurrentSection = () => {
+  switch (window.currentSection) {
+    case "home":
+      orbitTarget.x = -20;
+      orbitTarget.y = 0;
+      orbitTarget.z = 0;
+      posCameraInit.x = 0;
+      posCameraInit.y = 0;
+      posCameraInit.z = 10;
+      menuHolder[0].classList.remove("in");
+      rays.colorR = 1;
+      rays.colorG = 1;
+      rays.colorB = 1;
+      floor.sunColor = new THREE.Color(1, 0.1, 0);
+      break;
+    case "about":
+      orbitTarget.x = -20;
+      orbitTarget.y = 0;
+      orbitTarget.z = -10;
+      posCameraInit.x = -50;
+      posCameraInit.y = 20;
+      posCameraInit.z = -20;
+      rays.colorR = 1;
+      rays.colorG = 1;
+      rays.colorB = 1;
+      menuHolder[0].classList.add("in");
+      floor.sunColor = new THREE.Color(0.6, 0.6, 0.8);
+      break;
+    case "works":
+      orbitTarget.x = 30;
+      orbitTarget.y = 45;
+      orbitTarget.z = 0;
+      posCameraInit.x = -20;
+      posCameraInit.y = 45;
+      posCameraInit.z = 10;
+      rays.colorR = 0.7;
+      rays.colorG = 0.2;
+      rays.colorB = 0.1;
+      menuHolder[0].classList.add("in");
+      floor.sunColor = new THREE.Color(1, 0.1, 0);
+      break;
+    case "lab":
+      orbitTarget.x = -18;
+      orbitTarget.y = -50;
+      orbitTarget.z = 0;
+      posCameraInit.x = 0;
+      posCameraInit.y = -50;
+      posCameraInit.z = 10;
+      rays.colorR = 1;
+      rays.colorG = 1;
+      rays.colorB = 1;
+      menuHolder[0].classList.add("in");
+      floor.sunColor = new THREE.Color(1, 0.1, 0);
+      break;
+    case "contact":
+      orbitTarget.x = 400;
+      orbitTarget.y = 125;
+      orbitTarget.z = 0;
+      posCameraInit.x = 300;
+      posCameraInit.y = 125;
+      posCameraInit.z = 0;
+      rays.colorR = 1;
+      rays.colorG = 1;
+      rays.colorB = 1;
+      menuHolder[0].classList.add("in");
+      floor.sunColor = new THREE.Color(1, 0.1, 0);
+      break;
+  }
+};
+
+const visibleHeightAtZDepth = (depth, camera) => {
+  // compensate for cameras not positioned at z=0
+  let cameraOffset = camera.position.z;
+  console.log(depth, cameraOffset);
+  if (depth < cameraOffset) depth -= cameraOffset;
+  else depth += cameraOffset;
+
+  // vertical fov in radians
+  let vFOV = (camera.fov * Math.PI) / 180;
+
+  // Math.abs to ensure the result is always positive
+  return 2 * Math.tan(vFOV / 2) * Math.abs(depth);
+};
+
+const visibleWidthAtZDepth = (depth, camera) => {
+  let height = visibleHeightAtZDepth(depth, camera);
+  return height * camera.aspect;
+};
+
+const positionObjectAt = (posZ, xNormal, yNormal) => {
+  let posX =
+    (visibleWidthAtZDepth(posZ + posCameraInit.z, camera) * xNormal) / 2;
+  let posY =
+    (visibleHeightAtZDepth(posZ + posCameraInit.z, camera) * yNormal) / 2;
+  return { x: posX, y: posY };
+};
+
 const init = () => {
   //STATUS
   if (showStatus) {
     stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(stats.dom);
+  }
+
+  //PHOTOS SHADER
+  geometryFoto = new THREE.PlaneGeometry(0.2, 0.3, 16, 16);
+  uniformsFoto = {
+    uTime: { value: 0.0 },
+    uMouse: { value: { x: null, y: null } },
+    uTexture: { value: null },
+  };
+  uniformsFoto.uMouse = { value: new THREE.Vector4() };
+  uniformsFoto.uTime = { value: 0.0 };
+  uniformsFoto.uTexture = { value: new THREE.TextureLoader().load(foto) };
+  materialFoto = new THREE.ShaderMaterial({
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    uniforms: uniformsFoto,
+    wireframe: false,
+    side: THREE.DoubleSide,
+  });
+  meshFoto = new THREE.Mesh(geometryFoto, materialFoto);
+  camera.add(meshFoto);
+  boxFoto = new THREE.Box3().setFromObject(meshFoto);
+  posZFoto = -1;
+  if (window.innerWidth >= window.innerHeight) {
+    meshFoto.position.set(
+      positionObjectAt(posZFoto, -0.5, 0.0).x + boxFoto.getSize(center).x / 2,
+      positionObjectAt(posZFoto, -0.5, 0.0).y,
+      posZFoto
+    );
+  } else {
+    meshFoto.position.set(
+      positionObjectAt(posZFoto, 0.0, 0.7).x,
+      positionObjectAt(posZFoto, 0.0, 0.7).y - boxFoto.getSize(center).y / 2,
+      posZFoto
+    );
   }
 
   //MENU
@@ -125,8 +275,6 @@ const init = () => {
   //   fish[i] = new LoadGLTF(gltfFish, scene, camera, randomFloatFromInterval(0.0018,0.0178 ),randomFloatFromInterval(5, 12),randomFloatFromInterval(0.2, 1.0), randomFloatFromInterval(-150, 145), randomFloatFromInterval(-80, -20), 150, 600, randomFloatFromInterval(-40, 10), false, true, true);
   // }
 
-  // addPlaneCustomShader();
-
   //PARTICLES
   particles = new ParticlesEnvironment(2000, scene);
 
@@ -151,6 +299,9 @@ const init = () => {
 
   //COMPOSER
   composerEffects = new ComposerEffects(scene, camera, renderer);
+
+  //ROUTER
+  navigation(window.location.origin + window.location.pathname);
 };
 
 const animate = () => {
@@ -196,6 +347,8 @@ const animate = () => {
     musicHome.changeLowpass(lowpass, Q, gain);
   }
 
+  materialFoto.uniforms.uTime.value = clock.getElapsedTime();
+
   composerEffects.render();
   // renderer.render(scene, camera);
   if (showStatus) {
@@ -204,55 +357,14 @@ const animate = () => {
 };
 
 const menuClicked = (id) => {
-  console.log(id);
   if (id == "bt-about") {
-    orbitTarget.x = -20;
-    orbitTarget.y = 0;
-    orbitTarget.z = -10;
-    posCameraInit.x = -50;
-    posCameraInit.y = 20;
-    posCameraInit.z = -20;
-    rays.colorR = 1;
-    rays.colorG = 1;
-    rays.colorB = 1;
-    menuHolder[0].classList.add("in");
-    floor.sunColor = new THREE.Color(0.6, 0.6, 0.8);
+    navigation("/about");
   } else if (id == "bt-works") {
-    orbitTarget.x = 30;
-    orbitTarget.y = 45;
-    orbitTarget.z = 0;
-    posCameraInit.x = -20;
-    posCameraInit.y = 45;
-    posCameraInit.z = 10;
-    rays.colorR = 0.7;
-    rays.colorG = 0.2;
-    rays.colorB = 0.1;
-    menuHolder[0].classList.add("in");
-    floor.sunColor = new THREE.Color(1, 0.1, 0);
+    navigation("/works");
   } else if (id == "bt-lab") {
-    orbitTarget.x = -18;
-    orbitTarget.y = -50;
-    orbitTarget.z = 0;
-    posCameraInit.x = 0;
-    posCameraInit.y = -50;
-    posCameraInit.z = 10;
-    rays.colorR = 1;
-    rays.colorG = 1;
-    rays.colorB = 1;
-    menuHolder[0].classList.add("in");
-    floor.sunColor = new THREE.Color(1, 0.1, 0);
+    navigation("/lab");
   } else if (id == "bt-contact") {
-    orbitTarget.x = 400;
-    orbitTarget.y = 125;
-    orbitTarget.z = 0;
-    posCameraInit.x = 300;
-    posCameraInit.y = 125;
-    posCameraInit.z = 0;
-    rays.colorR = 1;
-    rays.colorG = 1;
-    rays.colorB = 1;
-    menuHolder[0].classList.add("in");
-    floor.sunColor = new THREE.Color(1, 0.1, 0);
+    navigation("/contact");
   }
 };
 
@@ -261,6 +373,7 @@ const randomFloatFromInterval = (min, max) => {
 };
 
 window.onload = function () {
+  navigation("/");
   document.querySelector("body").classList.remove("initial-hide");
   document.querySelector("h1").innerHTML = "";
 };
@@ -272,6 +385,21 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  composerEffects.composer.setSize(window.innerWidth, window.innerHeight);
+
+  if (window.innerWidth >= window.innerHeight) {
+    meshFoto.position.set(
+      positionObjectAt(posZFoto, -0.5, 0.0).x + boxFoto.getSize(center).x / 2,
+      positionObjectAt(posZFoto, -0.5, 0.0).y,
+      posZFoto
+    );
+  } else {
+    meshFoto.position.set(
+      positionObjectAt(posZFoto, 0.0, 0.7).x,
+      positionObjectAt(posZFoto, 0.0, 0.7).y - boxFoto.getSize(center).y / 2,
+      posZFoto
+    );
+  }
 }
 
 document.addEventListener(
@@ -313,17 +441,7 @@ titulo.addEventListener("click", (e) => {
       );
     }
   } else if (e.target.innerHTML === "JHUN KUSANO") {
-    orbitTarget.x = -20;
-    orbitTarget.y = 0;
-    orbitTarget.z = 0;
-    posCameraInit.x = 0;
-    posCameraInit.y = 0;
-    posCameraInit.z = 10;
-    menuHolder[0].classList.remove("in");
-    rays.colorR = 1;
-    rays.colorG = 1;
-    rays.colorB = 1;
-    floor.sunColor = new THREE.Color(1, 0.1, 0);
+    navigation("/");
   }
 });
 

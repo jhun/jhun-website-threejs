@@ -1,4 +1,4 @@
-export const vertexshader = `
+export const vertexShader = `
 precision highp float;
 
 varying vec3 vPos;
@@ -122,7 +122,7 @@ void main() {
   }
 `;
 
-export const fragmentshader = `
+export const fragmentShader = `
 precision highp float;
 
 varying vec2 vUv;

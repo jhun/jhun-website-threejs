@@ -62,7 +62,6 @@ export default class ParticlesEnvironment {
     var time = Date.now() * 0.00005;
     for (var i = 0; i < this.scene.children.length; i++) {
       var object = this.scene.children[i];
-
       if (object instanceof THREE.Points) {
         object.rotation.y = 2 * time * (i < 4 ? i + 1 : -(i + 1));
         object.rotation.x = 1 * (time * (i < 4 ? i + 1 : -(i + 1)));

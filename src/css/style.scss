@@ -151,6 +151,7 @@ section {
 }
 
 .credits {
+  pointer-events: all;
   position: absolute;
   width: 150px;
   height: 47px;
@@ -176,4 +177,8 @@ section {
   width: 100%;
   text-align: right !important;
   // background-color: green;
+}
+.credits li a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.4);
 }
