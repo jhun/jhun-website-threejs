@@ -43,8 +43,227 @@ import LoadSound from "./js/classes/Sound.js";
 import { vertexShader, fragmentShader } from "./glsl/photoShader.js";
 import foto from "./imagens/jhun.jpg";
 
+let worksList = [
+  {
+    id: 0,
+    cardType: "tallWide",
+    title: "Volvo Trucks Configurator",
+    client: "Volvo Trucks",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 1,
+    cardType: "wide",
+    title: "NBA",
+    client: "NBA",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 2,
+    cardType: "tall",
+    title: "O Parque",
+    client: "Gamaro",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 3,
+    cardType: "tallWide",
+    title: "DDX Digital Dealer Experience",
+    client: "Volkswagen",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 4,
+    cardType: "normal",
+    title: "Toyota Visitor Center",
+    client: "Toyota",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 5,
+    cardType: "normal",
+    title: "Espaço do Conhecimento",
+    client: "GS1 Brasil",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 6,
+    cardType: "normal",
+    title: "Volkswagen Polo and Virtus Lauching",
+    client: "Volkswagen",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 7,
+    cardType: "tallWide",
+    title: "Volkswagen Lauching",
+    client: "Volkswagen Venezuela",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+  {
+    id: 8,
+    cardType: "tall",
+    title: "Volkswagen Lauching",
+    client: "Volkswagen Argentina",
+    description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Processing",
+      "Resolume",
+      "Ableton Live",
+    ],
+    backgroundImage: "https://picsum.photos/id/575/800/530",
+    content: {
+      type: "video",
+      videoID: "5HadnuUHlPo",
+    },
+  },
+];
+
 let stats;
-let showStatus = false;
+let showStatus = true;
 let geometry, material, meshRoot;
 let horse,
   fox,
@@ -81,6 +300,12 @@ const center = new THREE.Vector3();
 let uniformsFoto;
 let clock = new THREE.Clock();
 
+let domElement;
+
+let enterSection = false;
+
+let timer;
+
 window.currentSection = "";
 
 window.checkCurrentSection = () => {
@@ -97,6 +322,7 @@ window.checkCurrentSection = () => {
       rays.colorG = 1;
       rays.colorB = 1;
       floor.sunColor = new THREE.Color(1, 0.1, 0);
+      domContent("home");
       break;
     case "about":
       orbitTarget.x = -20;
@@ -110,6 +336,7 @@ window.checkCurrentSection = () => {
       rays.colorB = 1;
       menuHolder[0].classList.add("in");
       floor.sunColor = new THREE.Color(0.6, 0.6, 0.8);
+      domContent("about");
       break;
     case "works":
       orbitTarget.x = 30;
@@ -123,6 +350,7 @@ window.checkCurrentSection = () => {
       rays.colorB = 0.1;
       menuHolder[0].classList.add("in");
       floor.sunColor = new THREE.Color(1, 0.1, 0);
+      domContent("works");
       break;
     case "lab":
       orbitTarget.x = -18;
@@ -136,6 +364,7 @@ window.checkCurrentSection = () => {
       rays.colorB = 1;
       menuHolder[0].classList.add("in");
       floor.sunColor = new THREE.Color(1, 0.1, 0);
+      domContent("lab");
       break;
     case "contact":
       orbitTarget.x = 400;
@@ -149,14 +378,282 @@ window.checkCurrentSection = () => {
       rays.colorB = 1;
       menuHolder[0].classList.add("in");
       floor.sunColor = new THREE.Color(1, 0.1, 0);
+      domContent("contact");
       break;
+  }
+};
+
+const makeCard = (cardId, cardType, cardTitle, cardBackgroundImage) => {
+  switch (cardType) {
+    case "normal":
+      let card = document.createElement("div");
+      card.classList.add("card");
+      card.dataset.cardId = cardId;
+      let titleCard = document.createElement("div");
+      titleCard.classList.add("title");
+      titleCard.innerHTML = cardTitle;
+      card.appendChild(titleCard);
+      card.style.backgroundImage = `url(${cardBackgroundImage})`;
+      return card;
+      break;
+    case "tall":
+      let cardTall = document.createElement("div");
+      cardTall.classList.add("card", "card-tall");
+      cardTall.dataset.cardId = cardId;
+      let titleCardTall = document.createElement("div");
+      titleCardTall.classList.add("title");
+      titleCardTall.innerHTML = cardTitle;
+      cardTall.appendChild(titleCardTall);
+      cardTall.style.backgroundImage = `url(${cardBackgroundImage})`;
+      return cardTall;
+      break;
+    case "wide":
+      let cardWide = document.createElement("div");
+      cardWide.classList.add("card", "card-wide");
+      cardWide.dataset.cardId = cardId;
+      let titleCardWide = document.createElement("div");
+      titleCardWide.classList.add("title");
+      titleCardWide.innerHTML = cardTitle;
+      cardWide.appendChild(titleCardWide);
+      cardWide.style.backgroundImage = `url(${cardBackgroundImage})`;
+      return cardWide;
+      break;
+    case "tallWide":
+      let cardTallWide = document.createElement("div");
+      cardTallWide.classList.add("card", "card-tall", "card-wide");
+      cardTallWide.dataset.cardId = cardId;
+      let titleCardTallWide = document.createElement("div");
+      titleCardTallWide.classList.add("title");
+      titleCardTallWide.innerHTML = cardTitle;
+      cardTallWide.appendChild(titleCardTallWide);
+      cardTallWide.style.backgroundImage = `url(${cardBackgroundImage})`;
+      return cardTallWide;
+      break;
+  }
+};
+const cardOver = (e) => {
+  e.target.classList.add("on");
+  e.target.querySelector(".title").classList.add("on");
+};
+const cardOut = (e) => {
+  e.target.classList.remove("on");
+  e.target.querySelector(".title").classList.remove("on");
+};
+const cardOpen = (e, cardId) => {
+  e.target.classList.remove("on");
+  e.target.querySelector(".title").classList.remove("on");
+  document.getElementById("content-works").classList.remove("on");
+  let cardInside = document.getElementById("card-inside");
+  // 2. This code loads the IFrame Player API code asynchronously.
+  // {
+  //   id: 0,
+  //   cardType: "tallWide",
+  //   title: "Volvo Trucks Configurator",
+  //   client: "Volvo Trucks",
+  //   description: `Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.`,
+  //   category: [
+  //     "Software Development",
+  //     "Creative Coding",
+  //     "Electronic Engeneering",
+  //   ],
+  //   technology: [
+  //     "Arduino",
+  //     "Hardware Hacking",
+  //     "Processing",
+  //     "Resolume",
+  //     "Ableton Live",
+  //   ],
+  //   backgroundImage: "https://picsum.photos/id/575/800/530",
+  //   content: {
+  //     type: "video",
+  //     videoID: "5HadnuUHlPo",
+  //   },
+  // },
+  let player = document.getElementById("player-youtube");
+  player.setAttribute(
+    "src",
+    `https://www.youtube.com/embed/${worksList[cardId].content.videoID}?controls=1`
+  );
+  let cardInsideTitle = document.getElementById("card-inside-title");
+  cardInsideTitle.innerHTML = worksList[cardId].title;
+
+  let cardInsideSubtitle = document.getElementById("card-inside-subtitle");
+  cardInsideSubtitle.innerHTML = `<span>Client:</span> ${worksList[cardId].client} | <span>Category:</span> ${worksList[cardId].category} | <span>Tech:</span> ${worksList[cardId].technology} `;
+
+  let cardInsideDescription = document.getElementById(
+    "card-inside-description"
+  );
+  cardInsideDescription.innerHTML = worksList[cardId].description;
+  timer = setTimeout(() => {
+    clearTimeout(timer);
+    cardInside.addEventListener("click", cardClose);
+    cardInside.classList.add("on");
+  }, 1000);
+};
+const cardClose = (e) => {
+  document.getElementById("content-works").classList.add("on");
+  e.target.classList.remove("on");
+};
+
+const domContent = (section) => {
+  while (domElement == undefined) {
+    domElement = document.getElementById("dom-elements");
+  }
+  enterSection = false;
+  try {
+    clearTimeout(timer);
+  } catch (err) {}
+
+  try {
+    camera.remove(meshFoto);
+  } catch (err) {}
+
+  if (domElement != undefined) {
+    while (domElement.firstChild) {
+      domElement.removeChild(domElement.firstChild);
+    }
+    domElement.classList.remove("on");
+    const element = document.createElement("div");
+    domElement.appendChild(element);
+    let content;
+    try {
+      content.classList.remove("on");
+    } catch (err) {}
+    switch (section) {
+      case "home":
+        break;
+      case "about":
+        content = document.createElement("div");
+        content.id = "content-about";
+        const aboutText = document.createElement("div");
+        aboutText.id = "about-text";
+        const aboutSpan = document.createElement("span");
+        aboutSpan.innerHTML =
+          "Hello I'm Jhun. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.";
+        aboutText.appendChild(aboutSpan);
+        content.appendChild(aboutText);
+        element.appendChild(content);
+        timer = setTimeout(() => {
+          clearTimeout(timer);
+          camera.add(meshFoto);
+          enterSection = true;
+          domElement.classList.add("on");
+          content.classList.add("on");
+        }, 3000);
+
+        break;
+      case "works":
+        content = document.createElement("div");
+        content.id = "content-works";
+        content.classList.add("image-mosaic");
+        worksList.map((work) => {
+          let newCard = makeCard(
+            work.id,
+            work.cardType,
+            work.title,
+            work.backgroundImage
+          );
+          content.appendChild(newCard);
+        });
+        const cardInside = document.createElement("div");
+        cardInside.id = "card-inside";
+
+        let cardInsideTitle = document.createElement("h1");
+        cardInsideTitle.id = "card-inside-title";
+        cardInside.appendChild(cardInsideTitle);
+
+        let cardInsideSubtitle = document.createElement("h2");
+        cardInsideSubtitle.id = "card-inside-subtitle";
+        cardInside.appendChild(cardInsideSubtitle);
+
+        let cardInsidePlayer = document.createElement("div");
+        cardInsidePlayer.id = "player";
+        cardInsidePlayer.innerHTML = `<iframe id="player-youtube"  width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        cardInside.appendChild(cardInsidePlayer);
+
+        let cardInsideDescription = document.createElement("p");
+        cardInsideDescription.id = "card-inside-description";
+        cardInside.appendChild(cardInsideDescription);
+
+        domElement.appendChild(cardInside);
+        element.appendChild(content);
+        timer = setTimeout(() => {
+          clearTimeout(timer);
+          domElement.classList.add("on");
+          content.classList.add("on");
+          var cardsClass = document.getElementsByClassName("card");
+          for (var i = 0; i < cardsClass.length; i++) {
+            let id = cardsClass[i].dataset.cardId;
+            cardsClass[i].addEventListener("mouseover", cardOver);
+            cardsClass[i].addEventListener("mouseout", cardOut);
+            cardsClass[i].addEventListener("click", (e) => {
+              cardOpen(e, id);
+            });
+          }
+        }, 3000);
+        break;
+      case "lab":
+        content = document.createTextNode(section);
+        element.appendChild(content);
+        break;
+      case "contact":
+        const form = document.createElement("form");
+        // form.setAttribute("method", "post");
+        // form.setAttribute("action", "submit.php");
+
+        const br = document.createElement("br");
+
+        const inputName = document.createElement("input");
+        inputName.setAttribute("type", "text");
+        inputName.setAttribute("name", "name");
+        inputName.setAttribute("placeholder", "Name");
+
+        const inputEmail = document.createElement("input");
+        inputEmail.setAttribute("type", "email");
+        inputEmail.setAttribute("name", "email");
+        inputEmail.setAttribute("placeholder", "E-mail");
+
+        const inputMessage = document.createElement("textarea");
+        inputMessage.setAttribute("name", "message");
+        inputMessage.setAttribute("rows", "5");
+        inputMessage.setAttribute("cols", "50");
+        inputMessage.setAttribute("placeholder", "Message");
+
+        const btSubmit = document.createElement("input");
+        btSubmit.setAttribute("type", "submit");
+        btSubmit.setAttribute("value", "Submit");
+
+        form.appendChild(inputName);
+        form.appendChild(br.cloneNode());
+        form.appendChild(inputEmail);
+        form.appendChild(br.cloneNode());
+        form.appendChild(inputMessage);
+        form.appendChild(br.cloneNode());
+        form.appendChild(btSubmit);
+
+        element.appendChild(form);
+        domElement.classList.add("on");
+        setTimeout(() => {
+          inputName.classList.add("on");
+        }, 3000);
+        setTimeout(() => {
+          inputEmail.classList.add("on");
+        }, 3200);
+        setTimeout(() => {
+          inputMessage.classList.add("on");
+        }, 3400);
+        setTimeout(() => {
+          btSubmit.classList.add("on");
+        }, 3600);
+        break;
+    }
   }
 };
 
 const visibleHeightAtZDepth = (depth, camera) => {
   // compensate for cameras not positioned at z=0
   let cameraOffset = camera.position.z;
-  console.log(depth, cameraOffset);
+  // console.log(depth, cameraOffset);
   if (depth < cameraOffset) depth -= cameraOffset;
   else depth += cameraOffset;
 
@@ -194,6 +691,7 @@ const init = () => {
     uTime: { value: 0.0 },
     uMouse: { value: { x: null, y: null } },
     uTexture: { value: null },
+    uOpacity: { value: 0.0 },
   };
   uniformsFoto.uMouse = { value: new THREE.Vector4() };
   uniformsFoto.uTime = { value: 0.0 };
@@ -204,15 +702,16 @@ const init = () => {
     uniforms: uniformsFoto,
     wireframe: false,
     side: THREE.DoubleSide,
+    transparent: true,
   });
   meshFoto = new THREE.Mesh(geometryFoto, materialFoto);
-  camera.add(meshFoto);
+  // camera.add(meshFoto);
   boxFoto = new THREE.Box3().setFromObject(meshFoto);
   posZFoto = -1;
   if (window.innerWidth >= window.innerHeight) {
     meshFoto.position.set(
-      positionObjectAt(posZFoto, -0.5, 0.0).x + boxFoto.getSize(center).x / 2,
-      positionObjectAt(posZFoto, -0.5, 0.0).y,
+      positionObjectAt(posZFoto, 0, 0.0).x - 0.15,
+      positionObjectAt(posZFoto, 0, 0.0).y,
       posZFoto
     );
   } else {
@@ -301,7 +800,7 @@ const init = () => {
   composerEffects = new ComposerEffects(scene, camera, renderer);
 
   //ROUTER
-  navigation(window.location.origin + window.location.pathname);
+  navigation(window.location.pathname);
 };
 
 const animate = () => {
@@ -349,6 +848,19 @@ const animate = () => {
 
   materialFoto.uniforms.uTime.value = clock.getElapsedTime();
 
+  if (
+    window.currentSection == "about" &&
+    enterSection &&
+    materialFoto.uniforms.uOpacity.value < 0.8
+  ) {
+    materialFoto.uniforms.uOpacity.value += 0.02;
+  } else if (
+    window.currentSection != "about" &&
+    materialFoto.uniforms.uOpacity.value > 0.0
+  ) {
+    materialFoto.uniforms.uOpacity.value = 0.0;
+  }
+
   composerEffects.render();
   // renderer.render(scene, camera);
   if (showStatus) {
@@ -372,8 +884,11 @@ const randomFloatFromInterval = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+  domElement = document.getElementById("dom-elements");
+});
+
 window.onload = function () {
-  navigation("/");
   document.querySelector("body").classList.remove("initial-hide");
   document.querySelector("h1").innerHTML = "";
 };
@@ -389,8 +904,8 @@ function onWindowResize() {
 
   if (window.innerWidth >= window.innerHeight) {
     meshFoto.position.set(
-      positionObjectAt(posZFoto, -0.5, 0.0).x + boxFoto.getSize(center).x / 2,
-      positionObjectAt(posZFoto, -0.5, 0.0).y,
+      positionObjectAt(posZFoto, 0, 0.0).x - 0.15,
+      positionObjectAt(posZFoto, 0, 0.0).y,
       posZFoto
     );
   } else {

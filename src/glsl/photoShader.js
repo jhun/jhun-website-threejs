@@ -134,6 +134,7 @@ precision mediump float;
 varying vec2 vUv;
 varying float vWave;
 uniform sampler2D uTexture;
+uniform float uOpacity;
 
 void main() {
   float wave = vWave * 0.25;
@@ -142,5 +143,6 @@ void main() {
   float b = texture2D(uTexture, vUv + wave).b/3.;
   vec3 texture = vec3(r, g, b);
   gl_FragColor = vec4(texture, 1.);
+  gl_FragColor.w = uOpacity;
 }
 `;
