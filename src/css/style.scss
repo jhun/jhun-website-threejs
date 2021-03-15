@@ -93,6 +93,10 @@ section {
         a {
           color: rgba(255, 255, 255, 0.5);
         }
+        &.off {
+          color: rgba(255, 255, 255, 1);
+          pointer-events: none;
+        }
       }
       li:not(:last-child):after {
         content: "|";
@@ -191,11 +195,12 @@ section {
 }
 
 #dom-elements {
+  // pointer-events: none !important;
   position: absolute;
   opacity: 0;
   visibility: hidden;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   top: -3vh;
   pointer-events: all;
   background: transparent;
@@ -209,10 +214,14 @@ section {
 }
 
 form {
+  pointer-events: all;
   position: absolute;
   left: 50%;
   transform: translateX(-50%) translateY(-60%);
   margin-top: 50vh;
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1), visibility 0s linear 0s;
   input,
   textarea {
     width: 0px;
@@ -231,6 +240,12 @@ form {
       width: 400px;
     }
   }
+  &.off {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1),
+      visibility 0s linear 2s;
+  }
 }
 @media screen and (orientation: portrait) {
   form {
@@ -243,12 +258,59 @@ form {
     }
   }
 }
+
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white;
   opacity: 1; /* Firefox */
 }
 
+#infos {
+  width: 100%;
+  margin-top: 40px;
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 12px;
+  transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1), visibility 0s linear 2s;
+  &.on {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1),
+      visibility 0s linear 0s;
+  }
+  a {
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+  }
+}
+
+#feedback {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  width: 200px;
+  height: 200px;
+  padding: 20px;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-61%);
+  overflow: hidden;
+  border: 1px solid white;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1), visibility 0s linear 2s;
+  &.on {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1),
+      visibility 0s linear 0s;
+  }
+}
 #content-about {
   position: absolute;
   display: flex;
@@ -265,18 +327,19 @@ form {
   // border: 1px white solid;
   text-align: left;
   font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 2px;
+  line-height: 22px;
+  letter-spacing: 1px;
   overflow: hidden;
   transition: width 8s cubic-bezier(0.19, 1, 0.22, 1),
     height 8s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
   &.on {
     opacity: 1;
     width: 45%;
-    max-width: 300px;
+    max-width: 350px;
     height: 45%;
   }
-  span {
+  p {
+    display: inline;
     background-color: rgba(0, 0, 0, 0.7);
     padding: 3px 5px;
     -webkit-box-decoration-break: clone;
@@ -290,8 +353,19 @@ form {
     text-align: justify;
     text-justify: auto;
     line-height: 18px;
-    transform: translateX(-50%) translateY(-0%);
+    transform: translateX(-50%) translateY(-10%);
+    &.on {
+      opacity: 1;
+      width: 70%;
+      max-width: 400px;
+      height: 45%;
+    }
   }
+}
+
+.send-message {
+  cursor: pointer;
+  color: rgba(0, 200, 255, 0.8);
 }
 
 #content-works {
@@ -320,6 +394,7 @@ form {
 }
 .card {
   cursor: pointer;
+  pointer-events: all;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -415,7 +490,7 @@ form {
   justify-content: center;
   // background-color: yellowgreen;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1),
     visibility 0s linear 1.5s;
   &.on {
@@ -428,18 +503,47 @@ form {
 #card-inside-title {
   width: 50vw;
   min-width: 300px;
-  margin-bottom: 2px;
+  margin: 0;
+  padding-bottom: 10px;
   padding-left: 25px;
   padding-right: 25px;
+  text-transform: uppercase;
+  font-family: "Oswald", sans-serif;
+  letter-spacing: 5px;
+}
+#bt-fechar {
+  pointer-events: all;
+  cursor: pointer;
+  margin-left: calc(50vw - 3vw);
+  margin-bottom: 10px;
+  padding: 0;
+  width: 3vw;
+  height: 3vw;
+  min-width: 25px;
+  min-height: 25px;
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+#bt-fechar::after {
+  content: "X";
+}
+@media screen and (orientation: portrait) {
+  #bt-fechar {
+    margin-left: 0;
+  }
 }
 #card-inside-subtitle {
   width: 50vw;
   min-width: 300px;
-  margin-bottom: 20px;
+  margin: 0;
   padding-left: 25px;
   padding-right: 25px;
+  padding-bottom: 15px;
   font-size: 10px;
-  font-weight: normal;
+  font-weight: lighter;
   color: rgba(255, 255, 255, 0.5);
   span {
     color: white;
@@ -448,13 +552,145 @@ form {
 #card-inside-description {
   width: 50vw;
   min-width: 300px;
-  margin-top: 40px;
+  margin: 0;
+  padding-top: 15px;
   padding-left: 25px;
   padding-right: 25px;
+  font-size: 12px;
+  font-weight: lighter;
+  line-height: 18px;
 }
 #player {
+  pointer-events: all;
   width: 50vw;
   min-width: 300px;
   height: 28.125vw;
   min-height: 166px;
+}
+
+#content-lab {
+  opacity: 0;
+  width: 0%;
+  height: 70vh;
+  overflow: hidden;
+  transition: width 5s cubic-bezier(0.19, 1, 0.22, 1),
+    height 5s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
+  &.on {
+    opacity: 1;
+    width: 60%;
+    height: auto;
+  }
+}
+
+#card-inside-lab {
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  // background-color: yellowgreen;
+  width: 100%;
+  height: 100vh;
+  transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1),
+    visibility 0s linear 1.5s;
+  &.on {
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s linear 0s,
+      opacity 5s cubic-bezier(0.19, 1, 0.22, 1) 0.1s;
+  }
+}
+#card-inside-lab-title {
+  width: 50vw;
+  min-width: 300px;
+  margin: 0;
+  padding-bottom: 10px;
+  padding-left: 25px;
+  padding-right: 25px;
+  text-transform: uppercase;
+  font-family: "Oswald", sans-serif;
+  letter-spacing: 5px;
+}
+#bt-fechar-lab {
+  pointer-events: all;
+  cursor: pointer;
+  margin-left: calc(50vw - 3vw);
+  margin-bottom: 10px;
+  padding: 0;
+  width: 3vw;
+  height: 3vw;
+  min-width: 25px;
+  min-height: 25px;
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+#bt-fechar-lab::after {
+  content: "X";
+}
+@media screen and (orientation: portrait) {
+  #bt-fechar-lab {
+    margin-left: 0;
+  }
+}
+#card-inside-lab-subtitle {
+  width: 50vw;
+  min-width: 300px;
+  margin: 0;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 15px;
+  font-size: 10px;
+  font-weight: lighter;
+  color: rgba(255, 255, 255, 0.5);
+  span {
+    color: white;
+  }
+}
+#card-inside-lab-description {
+  width: 50vw;
+  min-width: 300px;
+  margin: 0;
+  padding-top: 15px;
+  padding-left: 25px;
+  padding-right: 25px;
+  font-size: 12px;
+  font-weight: lighter;
+  line-height: 18px;
+}
+#player-lab {
+  pointer-events: all;
+  width: 50vw;
+  min-width: 300px;
+  height: 28.125vw;
+  min-height: 166px;
+}
+
+#content-soon {
+  opacity: 0;
+  width: 0%;
+  height: 70vh;
+  margin-left: 50vw;
+  margin-top: 50vh;
+  transform: translateX(-50%) translateY(-50%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border: 1px solid white;
+  font-size: 12px;
+  line-height: 18px;
+  transition: width 5s cubic-bezier(0.19, 1, 0.22, 1),
+    height 5s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
+  &.on {
+    opacity: 1;
+    width: 200px;
+    height: 200px;
+  }
 }
