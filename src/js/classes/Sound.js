@@ -7,7 +7,7 @@ export default class LoadSound {
     this.listener = new THREE.AudioListener();
     this.sound = new THREE.Audio(this.listener);
     this.audioLoader = new THREE.AudioLoader();
-    console.log(this.sound.context);
+    // console.log(this.sound.context);
     this.biquadFilter = this.sound.context.createBiquadFilter();
     this.convolver = this.sound.context.createConvolver();
     this.biquadFilter.connect(this.convolver);
@@ -54,6 +54,13 @@ export default class LoadSound {
   }
   lerp(start, end, amt) {
     return (1 - amt) * start + amt * end;
+  }
+  changeVolume(gain) {
+    if (this.sound.getVolume() < gain) {
+      this.sound.setVolume(this.sound.getVolume() + 0.004);
+    } else {
+      this.sound.setVolume(this.sound.getVolume() - 0.004);
+    }
   }
   changeLowpass(lowpass, Q, gain) {
     if (

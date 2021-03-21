@@ -42,6 +42,8 @@ import gltfWhale from "./models/whale.gltf";
 import gltfOctopus from "./models/octopus.gltf";
 // import gltfFish from "./models/life_soup/fishA.gltf";
 
+const YTPlayer = require("yt-player");
+
 //SOUNDS
 import stranger from "./sounds/theme-jhun.ogg";
 import LoadSound from "./js/classes/Sound.js";
@@ -87,13 +89,13 @@ let lowpass = 1000;
 let Q = 0;
 let gain = 0.5;
 
-let materialFoto;
-let geometryFoto;
-let meshFoto;
-let boxFoto;
-let posZFoto;
+// let materialFoto;
+// let geometryFoto;
+// let meshFoto;
+// let boxFoto;
+// let posZFoto;
 const center = new THREE.Vector3();
-let uniformsFoto;
+// let uniformsFoto;
 let clock = new THREE.Clock();
 
 let domElement;
@@ -105,6 +107,11 @@ let timer;
 
 window.currentSection = "";
 let started = false;
+
+window.playerObject;
+window.playerLabObject;
+let playerPlaying = false;
+let playerPlayingLab = false;
 
 window.checkCurrentSection = () => {
   let bts;
@@ -167,8 +174,8 @@ window.checkCurrentSection = () => {
         }
         bt = document.getElementById("bt-works");
         bt.classList.add("off");
-        // domContent("works");
-        domContent("soon");
+        domContent("works");
+        // domContent("soon");
         break;
       case "lab":
         orbitTarget.x = -18;
@@ -190,7 +197,6 @@ window.checkCurrentSection = () => {
         bt.classList.add("off");
         // domContent("lab");
         domContent("soon");
-
         break;
       case "contact":
         orbitTarget.x = 400;
@@ -216,7 +222,13 @@ window.checkCurrentSection = () => {
   }
 };
 
-const makeCard = (cardId, cardType, cardTitle, cardBackgroundImage) => {
+const makeCard = (
+  cardId,
+  cardType,
+  cardTitle,
+  cardClient,
+  cardBackgroundImage
+) => {
   switch (cardType) {
     case "normal":
       let card = document.createElement("div");
@@ -277,12 +289,17 @@ const cardOpen = (e, cardId) => {
   e.target.querySelector(".title").classList.remove("on");
   document.getElementById("content-works").classList.remove("on");
   let cardInside = document.getElementById("card-inside");
+  window.playerObject.load(worksList[cardId].content.videoID);
+  window.playerObject.setVolume(100);
 
-  let player = document.getElementById("player-youtube");
-  player.setAttribute(
-    "src",
-    `https://www.youtube.com/embed/${worksList[cardId].content.videoID}?controls=1`
-  );
+  window.playerObject.on("playing", () => {
+    console.log("playing");
+    playerPlaying = true;
+  });
+  window.playerObject.on("paused", () => {
+    playerPlaying = false;
+  });
+
   let cardInsideTitle = document.getElementById("card-inside-title");
   cardInsideTitle.innerHTML = worksList[cardId].title;
 
@@ -304,6 +321,10 @@ const cardOpen = (e, cardId) => {
 const cardClose = (e) => {
   document.getElementById("content-works").classList.add("on");
   document.getElementById("card-inside").classList.remove("on");
+  try {
+    playerPlaying = false;
+    window.playerObject.pause();
+  } catch (err) {}
 };
 
 const cardOpenLab = (e, cardId) => {
@@ -311,12 +332,16 @@ const cardOpenLab = (e, cardId) => {
   e.target.querySelector(".title").classList.remove("on");
   document.getElementById("content-lab").classList.remove("on");
   let cardInsideLab = document.getElementById("card-inside-lab");
+  window.playerLabObject.load(labList[cardId].content.videoID);
+  window.playerLabObject.setVolume(100);
 
-  let playerLab = document.getElementById("player-youtube-lab");
-  playerLab.setAttribute(
-    "src",
-    `https://www.youtube.com/embed/${labList[cardId].content.videoID}?controls=1`
-  );
+  window.playerLabObject.on("playing", () => {
+    playerPlayingLab = true;
+  });
+  window.playerLabObject.on("paused", () => {
+    playerPlayingLab = false;
+  });
+
   let cardInsideLabTitle = document.getElementById("card-inside-lab-title");
   cardInsideLabTitle.innerHTML = labList[cardId].title;
 
@@ -339,10 +364,14 @@ const cardOpenLab = (e, cardId) => {
 const cardCloseLab = (e) => {
   document.getElementById("content-lab").classList.add("on");
   document.getElementById("card-inside-lab").classList.remove("on");
+  try {
+    playerPlayingLab = false;
+    window.playerLabObject.pause();
+  } catch (err) {}
 };
 
 const domContent = (section) => {
-  while (domElement == undefined) {
+  while (domElement === undefined) {
     domElement = document.getElementById("dom-elements");
   }
   enterSection = false;
@@ -350,16 +379,17 @@ const domContent = (section) => {
     clearTimeout(timer);
   } catch (err) {}
 
-  try {
-    camera.remove(meshFoto);
-  } catch (err) {}
+  // try {
+  //   camera.remove(meshFoto);
+  // } catch (err) {}
 
-  if (domElement != undefined) {
+  if (domElement !== undefined) {
     while (domElement.firstChild) {
       domElement.removeChild(domElement.firstChild);
     }
     domElement.classList.remove("on");
     const element = document.createElement("div");
+    element.classList.add("div-null");
     domElement.appendChild(element);
     let content;
     try {
@@ -371,15 +401,38 @@ const domContent = (section) => {
       case "about":
         content = document.createElement("div");
         content.id = "content-about";
+        const aboutPhoto = document.createElement("img");
+        aboutPhoto.id = "about-photo";
+        aboutPhoto.src = "https://jhun.com.br/imagens/jhun.jpg";
+
         const aboutText = document.createElement("div");
         aboutText.id = "about-text";
         const aboutSpan = document.createElement("p");
         aboutSpan.innerHTML = `Hi! I am Jhun, a Brazilian passionate about technology who lives his days in search of purposes in his work, hoping to improve the world in some way.
         <br />
-        I am graduated in Graphic Design and post-graduated (MBA) in Software Engineering. This sums up my multidisciplinary profile, always immersed in design and technology, mainly in interactive computer graphics, software engineering and electronics focused on the maker culture.
         <br />
-        Feel free to <span class="send-message">send me a message</span>!`;
+        I'm graduated in Graphic Design and post-graduated (MBA) in Software Engineering. This sums up my multidisciplinary profile, always immersed in design and technology, mainly in interactive computer graphics, software engineering and electronics focused on the maker culture.
+        <br />
+        <br />
+        I currently work at Umantech as a Tech Leader, but I am always open to talk about possible projects.
+        <br />
+        <br />
+        Feel free to <span class="send-message">send me a message</span>!
+        <br />
+        <br />
+        My Curriculum Vitae: <a href="https://jhun.com.br/cv-jhun.pdf">jhun@jhun.com.br</a>
+        <br />
+        <br />
+        e-mail: <a href="mailto:jhun@jhun.com.br">jhun@jhun.com.br</a>
+        <br />
+        linkedin: <a href="https://www.linkedin.com/in/denisjhunkusano">denisjhunkusano</a>
+        <br />
+        instagram: <a href="https://www.instagram.com/jhunkusano">jhunkusano</a>
+        <br />
+        github: <a href="https://github.com/jhun">jhun</a>`;
+
         aboutText.appendChild(aboutSpan);
+        content.appendChild(aboutPhoto);
         content.appendChild(aboutText);
         element.appendChild(content);
 
@@ -389,23 +442,23 @@ const domContent = (section) => {
           sendMessage[0].addEventListener("click", (e) => {
             menuClicked("bt-contact");
           });
-          camera.add(meshFoto);
-          if (window.innerWidth >= window.innerHeight) {
-            meshFoto.scale.set(1, 1, 1);
-            meshFoto.position.set(
-              positionObjectAt(posZFoto, 0, 0.0).x - 0.15,
-              positionObjectAt(posZFoto, 0, 0.0).y,
-              posZFoto
-            );
-          } else {
-            meshFoto.scale.set(0.7, 0.7, 0.7);
-            meshFoto.position.set(
-              positionObjectAt(posZFoto, 0.0, 0).x,
-              positionObjectAt(posZFoto, 0.0, 0).y +
-                boxFoto.getSize(center).y / 3,
-              posZFoto
-            );
-          }
+          // camera.add(meshFoto);
+          // if (window.innerWidth >= window.innerHeight) {
+          //   meshFoto.scale.set(1.1, 1.1, 1.1);
+          //   meshFoto.position.set(
+          //     positionObjectAt(posZFoto, 0, 0.0).x - 0.33,
+          //     positionObjectAt(posZFoto, 0, 0.0).y + 0.02,
+          //     posZFoto
+          //   );
+          // } else {
+          //   meshFoto.scale.set(0.9, 0.9, 0.9);
+          //   meshFoto.position.set(
+          //     positionObjectAt(posZFoto, 0.0, 0).x,
+          //     positionObjectAt(posZFoto, 0.0, 0).y +
+          //       boxFoto.getSize(center).y / 3,
+          //     posZFoto
+          //   );
+          // }
           enterSection = true;
           domElement.classList.add("on");
           content.classList.add("on");
@@ -413,6 +466,7 @@ const domContent = (section) => {
 
         break;
       case "works":
+        window.playerObject = undefined;
         content = document.createElement("div");
         content.id = "content-works";
         content.classList.add("image-mosaic");
@@ -421,6 +475,7 @@ const domContent = (section) => {
             work.id,
             work.cardType,
             work.title,
+            work.client,
             work.backgroundImage
           );
           content.appendChild(newCard);
@@ -442,7 +497,6 @@ const domContent = (section) => {
 
         let cardInsidePlayer = document.createElement("div");
         cardInsidePlayer.id = "player";
-        cardInsidePlayer.innerHTML = `<iframe id="player-youtube"  width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         cardInside.appendChild(cardInsidePlayer);
 
         let cardInsideDescription = document.createElement("p");
@@ -455,6 +509,9 @@ const domContent = (section) => {
           clearTimeout(timer);
           domElement.classList.add("on");
           content.classList.add("on");
+          if (window.playerObject === undefined) {
+            window.playerObject = new YTPlayer("#player");
+          }
           var cardsClass = document.getElementsByClassName("card");
           for (var i = 0; i < cardsClass.length; i++) {
             let id = cardsClass[i].dataset.cardId;
@@ -467,6 +524,7 @@ const domContent = (section) => {
         }, 3000);
         break;
       case "lab":
+        window.playerObjectLab = undefined;
         content = document.createElement("div");
         content.id = "content-lab";
         content.classList.add("image-mosaic");
@@ -475,6 +533,7 @@ const domContent = (section) => {
             lab.id,
             lab.cardType,
             lab.title,
+            lab.client,
             lab.backgroundImage
           );
           content.appendChild(newCard);
@@ -496,7 +555,6 @@ const domContent = (section) => {
 
         let cardInsideLabPlayer = document.createElement("div");
         cardInsideLabPlayer.id = "player-lab";
-        cardInsideLabPlayer.innerHTML = `<iframe id="player-youtube-lab"  width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         cardInsideLab.appendChild(cardInsideLabPlayer);
 
         let cardInsideLabDescription = document.createElement("p");
@@ -509,6 +567,9 @@ const domContent = (section) => {
           clearTimeout(timer);
           domElement.classList.add("on");
           content.classList.add("on");
+          if (window.playerLabObject === undefined) {
+            window.playerLabObject = new YTPlayer("#player-lab");
+          }
           var cardsClass = document.getElementsByClassName("card");
           for (var i = 0; i < cardsClass.length; i++) {
             let id = cardsClass[i].dataset.cardId;
@@ -679,28 +740,28 @@ const init = () => {
   }
 
   //PHOTOS SHADER
-  geometryFoto = new THREE.PlaneGeometry(0.2, 0.3, 16, 16);
-  uniformsFoto = {
-    uTime: { value: 0.0 },
-    uMouse: { value: { x: null, y: null } },
-    uTexture: { value: null },
-    uOpacity: { value: 0.0 },
-  };
-  uniformsFoto.uMouse = { value: new THREE.Vector4() };
-  uniformsFoto.uTime = { value: 0.0 };
-  uniformsFoto.uTexture = { value: new THREE.TextureLoader().load(foto) };
-  materialFoto = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
-    uniforms: uniformsFoto,
-    wireframe: false,
-    side: THREE.DoubleSide,
-    transparent: true,
-  });
-  meshFoto = new THREE.Mesh(geometryFoto, materialFoto);
+  // geometryFoto = new THREE.PlaneGeometry(0.2, 0.3, 16, 16);
+  // uniformsFoto = {
+  //   uTime: { value: 0.0 },
+  //   uMouse: { value: { x: null, y: null } },
+  //   uTexture: { value: null },
+  //   uOpacity: { value: 0.0 },
+  // };
+  // uniformsFoto.uMouse = { value: new THREE.Vector4() };
+  // uniformsFoto.uTime = { value: 0.0 };
+  // uniformsFoto.uTexture = { value: new THREE.TextureLoader().load(foto) };
+  // materialFoto = new THREE.ShaderMaterial({
+  //   vertexShader: vertexShader,
+  //   fragmentShader: fragmentShader,
+  //   uniforms: uniformsFoto,
+  //   wireframe: false,
+  //   side: THREE.DoubleSide,
+  //   transparent: true,
+  // });
+  // meshFoto = new THREE.Mesh(geometryFoto, materialFoto);
   // camera.add(meshFoto);
-  boxFoto = new THREE.Box3().setFromObject(meshFoto);
-  posZFoto = -1;
+  // boxFoto = new THREE.Box3().setFromObject(meshFoto);
+  // posZFoto = -1;
   // if (window.innerWidth >= window.innerHeight) {
   //   meshFoto.position.set(
   //     positionObjectAt(posZFoto, 0, 0.0).x - 0.15,
@@ -839,20 +900,32 @@ const animate = () => {
     musicHome.changeLowpass(lowpass, Q, gain);
   }
 
-  materialFoto.uniforms.uTime.value = clock.getElapsedTime();
-
-  if (
-    window.currentSection == "about" &&
-    enterSection &&
-    materialFoto.uniforms.uOpacity.value < 0.8
-  ) {
-    materialFoto.uniforms.uOpacity.value += 0.02;
-  } else if (
-    window.currentSection != "about" &&
-    materialFoto.uniforms.uOpacity.value > 0.0
-  ) {
-    materialFoto.uniforms.uOpacity.value = 0.0;
+  if (musicHome && musicHome.sound.isPlaying) {
+    if (playerPlaying || playerPlayingLab) {
+      if (musicHome.sound.getVolume() > 0.0) {
+        musicHome.changeVolume(0.0);
+      }
+    } else {
+      if (musicHome.sound.getVolume() < 0.5) {
+        musicHome.changeVolume(0.5);
+      }
+    }
   }
+
+  // materialFoto.uniforms.uTime.value = clock.getElapsedTime();
+
+  // if (
+  //   window.currentSection == "about" &&
+  //   enterSection &&
+  //   materialFoto.uniforms.uOpacity.value < 0.8
+  // ) {
+  //   materialFoto.uniforms.uOpacity.value += 0.02;
+  // } else if (
+  //   window.currentSection != "about" &&
+  //   materialFoto.uniforms.uOpacity.value > 0.0
+  // ) {
+  //   materialFoto.uniforms.uOpacity.value = 0.0;
+  // }
 
   composerEffects.render();
   // renderer.render(scene, camera);
@@ -895,22 +968,21 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   composerEffects.composer.setSize(window.innerWidth, window.innerHeight);
 
-  if (window.innerWidth >= window.innerHeight) {
-    meshFoto.scale.set(1, 1, 1);
-    meshFoto.position.set(
-      positionObjectAt(posZFoto, 0, 0.0).x - 0.15,
-      positionObjectAt(posZFoto, 0, 0.0).y,
-      posZFoto
-    );
-  } else {
-    meshFoto.scale.set(0.7, 0.7, 0.7);
-    meshFoto.position.set(
-      positionObjectAt(posZFoto, 0.0, 0).x,
-      positionObjectAt(posZFoto, 0.0, 0).y + boxFoto.getSize(center).y / 3,
-      posZFoto
-    );
-  }
-  console.log(meshFoto.position);
+  // if (window.innerWidth >= window.innerHeight) {
+  //   meshFoto.scale.set(1.1, 1.1, 1.1);
+  //   meshFoto.position.set(
+  //     positionObjectAt(posZFoto, 0, 0.0).x - 0.33,
+  //     positionObjectAt(posZFoto, 0, 0.0).y + 0.02,
+  //     posZFoto
+  //   );
+  // } else {
+  //   meshFoto.scale.set(0.9, 0.9, 0.9);
+  //   meshFoto.position.set(
+  //     positionObjectAt(posZFoto, 0.0, 0).x,
+  //     positionObjectAt(posZFoto, 0.0, 0).y + boxFoto.getSize(center).y / 3,
+  //     posZFoto
+  //   );
+  // }
 }
 
 document.addEventListener(

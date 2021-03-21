@@ -91,7 +91,7 @@ section {
         user-select: none;
         line-height: 15px;
         a {
-          color: rgba(255, 255, 255, 0.5);
+          color: rgba(255, 255, 255, 0.8);
         }
         &.off {
           color: rgba(255, 255, 255, 1);
@@ -101,7 +101,7 @@ section {
       li:not(:last-child):after {
         content: "|";
         padding: 0 15px;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.5);
       }
     }
   }
@@ -143,7 +143,7 @@ section {
       height: 40px;
       font-family: "Quicksand", sans-serif;
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.8);
       display: block;
       line-height: 40px;
       // background-color: yellowgreen;
@@ -160,34 +160,38 @@ section {
 }
 
 .credits {
-  pointer-events: all;
-  position: absolute;
-  width: 150px;
-  height: 47px;
-  right: 20px;
-  bottom: 10px;
+  pointer-events: none;
+  position: fixed;
+  width: 100vh;
+  bottom: 0;
+  left: 25px;
   font-family: "Oswald", sans-serif;
   font-size: 9px;
   letter-spacing: 1px;
+  line-height: 10px;
   color: rgba(255, 255, 255, 0.4);
   // background-color: red;
   margin: 0;
-  padding: 0;
+  padding-top: 0px;
+  transform-origin: bottom left;
+  transform: rotate3d(0, 0, 1, -90deg);
 }
 .credits {
   ul {
-    margin: 0;
-    padding: 0 10px 0 0 !important;
+    padding-top: 5px;
+    padding-left: 10px;
     box-sizing: border-box;
     width: 100%;
-    height: 100%;
+    height: 15px;
   }
   li {
     display: block !important;
     width: 100%;
-    text-align: right !important;
+    height: 15px;
+    text-align: left;
     // background-color: green;
     a {
+      pointer-events: all;
       text-decoration: none;
       color: rgba(255, 255, 255, 0.4);
     }
@@ -199,26 +203,58 @@ section {
   position: absolute;
   opacity: 0;
   visibility: hidden;
-  width: 100%;
-  height: 100vh;
-  top: -3vh;
+  width: 100vw;
+  height: 85vh;
+  bottom: 0;
   pointer-events: all;
   background: transparent;
   transition: visibility 0s, opacity 1s linear;
   overflow-x: hidden;
   overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   &.on {
     opacity: 1;
     visibility: visible;
   }
 }
 
+#dom-elements::-webkit-scrollbar {
+  display: none;
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+  #dom-elements {
+    height: 75vh;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  #dom-elements {
+    height: 75vh;
+  }
+}
+
+@media screen and (max-height: 512px) {
+  #dom-elements {
+    height: 70vh;
+  }
+}
+
+@media screen and (max-height: 340px) {
+  #dom-elements {
+    height: 55vh;
+  }
+}
+
+.div-null {
+  height: 100%;
+}
 form {
   pointer-events: all;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%) translateY(-60%);
-  margin-top: 50vh;
+  transform: translateX(-50%);
   visibility: visible;
   opacity: 1;
   transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1), visibility 0s linear 0s;
@@ -297,7 +333,7 @@ form {
   padding: 20px;
   left: 50%;
   top: 50%;
-  transform: translateX(-50%) translateY(-61%);
+  transform: translateX(-50%) translateY(-50%);
   overflow: hidden;
   border: 1px solid white;
   cursor: pointer;
@@ -313,30 +349,33 @@ form {
 }
 #content-about {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
   left: 50%;
-  transform: translateX(-5%) translateY(-55%);
-  margin-top: 50vh;
+  transform: translateX(-50%);
   opacity: 0;
   width: 0;
   height: 0;
-  padding: 30px;
+  top: 0;
+  padding-bottom: 50px;
   box-sizing: border-box;
-  // border: 1px white solid;
   text-align: left;
   font-size: 12px;
-  line-height: 22px;
+  line-height: 20px;
   letter-spacing: 1px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   transition: width 8s cubic-bezier(0.19, 1, 0.22, 1),
     height 8s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
+
   &.on {
     opacity: 1;
-    width: 45%;
-    max-width: 350px;
-    height: 45%;
+    width: 50%;
+    max-width: 500px;
+    height: 100%;
   }
   p {
     display: inline;
@@ -344,23 +383,37 @@ form {
     padding: 3px 5px;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
+    a {
+      color: rgba(0, 200, 255, 0.8);
+      text-decoration: none;
+    }
   }
+}
+
+#content-about::-webkit-scrollbar {
+  display: none;
 }
 
 @media screen and (orientation: portrait) {
   #content-about {
-    padding: 10px;
-    text-align: justify;
-    text-justify: auto;
+    // text-align: justify;
+    // text-justify: auto;
     line-height: 18px;
-    transform: translateX(-50%) translateY(-10%);
     &.on {
       opacity: 1;
       width: 70%;
       max-width: 400px;
-      height: 45%;
+      height: 85%;
     }
   }
+}
+
+#about-photo {
+  width: 150px;
+  margin-bottom: 25px;
+  margin-left: 50%;
+  opacity: 0.8;
+  transform: translateX(-53%);
 }
 
 .send-message {
@@ -373,8 +426,8 @@ form {
   width: 0%;
   height: 70vh;
   overflow: hidden;
-  transition: width 5s cubic-bezier(0.19, 1, 0.22, 1),
-    height 5s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
+  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1),
+    height 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
   &.on {
     opacity: 1;
     width: 60%;
@@ -383,7 +436,7 @@ form {
 }
 .image-mosaic {
   display: grid;
-  padding-top: 150px;
+  padding-top: 50px;
   padding-bottom: 100px;
   margin-left: auto;
   margin-right: auto;
@@ -411,12 +464,12 @@ form {
   overflow: hidden;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: auto 100%;
   padding: 0;
   margin: 0;
   transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
   &.on {
-    background-size: 120% 120%;
+    background-size: auto 120%;
   }
 
   .title {
@@ -484,13 +537,14 @@ form {
   top: 0;
   visibility: hidden;
   opacity: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // justify-content: start;
   // background-color: yellowgreen;
   width: 100%;
-  height: 100vh;
+  padding-bottom: 100px;
+  overflow: hidden;
   transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1),
     visibility 0s linear 1.5s;
   &.on {
@@ -503,7 +557,7 @@ form {
 #card-inside-title {
   width: 50vw;
   min-width: 300px;
-  margin: 0;
+  margin: 0 auto;
   padding-bottom: 10px;
   padding-left: 25px;
   padding-right: 25px;
@@ -512,13 +566,14 @@ form {
   letter-spacing: 5px;
 }
 #bt-fechar {
+  position: fixed;
   pointer-events: all;
   cursor: pointer;
-  margin-left: calc(50vw - 3vw);
-  margin-bottom: 10px;
+  margin-left: calc(75vw - 103px);
+  transform: translateY(-35px);
   padding: 0;
-  width: 3vw;
-  height: 3vw;
+  width: 100px;
+  height: 20px;
   min-width: 25px;
   min-height: 25px;
   border: 1px solid white;
@@ -526,25 +581,31 @@ form {
   align-items: center;
   justify-content: center;
   vertical-align: middle;
+  font-size: 11px;
 }
 #bt-fechar::after {
-  content: "X";
+  content: "X Close";
+}
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+  #bt-fechar {
+    margin-left: calc(50vw - 50px);
+  }
 }
 @media screen and (orientation: portrait) {
   #bt-fechar {
-    margin-left: 0;
+    margin-left: calc(50vw - 50px);
   }
 }
 #card-inside-subtitle {
   width: 50vw;
   min-width: 300px;
-  margin: 0;
+  margin: 0 auto;
   padding-left: 25px;
   padding-right: 25px;
   padding-bottom: 15px;
   font-size: 10px;
   font-weight: lighter;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
   span {
     color: white;
   }
@@ -552,13 +613,19 @@ form {
 #card-inside-description {
   width: 50vw;
   min-width: 300px;
-  margin: 0;
+  margin: 0 auto;
   padding-top: 15px;
   padding-left: 25px;
   padding-right: 25px;
+  text-align: left;
   font-size: 12px;
   font-weight: lighter;
   line-height: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  span {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 1);
+  }
 }
 #player {
   pointer-events: all;
@@ -573,8 +640,8 @@ form {
   width: 0%;
   height: 70vh;
   overflow: hidden;
-  transition: width 5s cubic-bezier(0.19, 1, 0.22, 1),
-    height 5s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
+  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1),
+    height 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
   &.on {
     opacity: 1;
     width: 60%;
@@ -647,7 +714,7 @@ form {
   padding-bottom: 15px;
   font-size: 10px;
   font-weight: lighter;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
   span {
     color: white;
   }
@@ -676,8 +743,7 @@ form {
   width: 0%;
   height: 70vh;
   margin-left: 50vw;
-  margin-top: 50vh;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -691,6 +757,6 @@ form {
   &.on {
     opacity: 1;
     width: 200px;
-    height: 200px;
+    height: 150px;
   }
 }

@@ -19,9 +19,11 @@ export default class Preloader {
   }
 
   static instancesLoaded() {
-    document.querySelector(
-      "h1"
-    ).innerHTML = `${loaded} / ${this.instancesCount()}<br/><div style="font-size:10px; margin-top:5px;"> OBJECTS LOADED</div>`;
+    let h1;
+    while (h1 === undefined) {
+      h1 = document.querySelector("h1");
+    }
+    h1.innerHTML = `${loaded} / ${this.instancesCount()}<br/><div style="font-size:10px; margin-top:5px;"> OBJECTS LOADED</div>`;
     if (loaded == this.instancesCount()) {
       document.querySelector("body").style.pointerEvents = "all";
       document.getElementById("title").style.pointerEvents = "all";
