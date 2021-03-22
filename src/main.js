@@ -45,7 +45,7 @@ import gltfOctopus from "./models/octopus.gltf";
 const YTPlayer = require("yt-player");
 
 //SOUNDS
-import stranger from "./sounds/theme-jhun.ogg";
+import stranger from "./sounds/Daft-Punk-Recognizer.mp3";
 import LoadSound from "./js/classes/Sound.js";
 
 //SHADERS
@@ -195,8 +195,8 @@ window.checkCurrentSection = () => {
         }
         bt = document.getElementById("bt-lab");
         bt.classList.add("off");
-        // domContent("lab");
-        domContent("soon");
+        domContent("lab");
+        // domContent("soon");
         break;
       case "contact":
         orbitTarget.x = 400;
@@ -420,16 +420,16 @@ const domContent = (section) => {
         Feel free to <span class="send-message">send me a message</span>!
         <br />
         <br />
-        My Curriculum Vitae: <a href="https://jhun.com.br/cv-jhun.pdf">jhun@jhun.com.br</a>
+        My Curriculum Vitae: <a href="https://jhun.com.br/cv-jhun.pdf" target="_blank">click here</a>
         <br />
         <br />
         e-mail: <a href="mailto:jhun@jhun.com.br">jhun@jhun.com.br</a>
         <br />
-        linkedin: <a href="https://www.linkedin.com/in/denisjhunkusano">denisjhunkusano</a>
+        linkedin: <a href="https://www.linkedin.com/in/denisjhunkusano" target="_blank">denisjhunkusano</a>
         <br />
-        instagram: <a href="https://www.instagram.com/jhunkusano">jhunkusano</a>
+        instagram: <a href="https://www.instagram.com/jhunkusano" target="_blank">jhunkusano</a>
         <br />
-        github: <a href="https://github.com/jhun">jhun</a>`;
+        github: <a href="https://github.com/jhun" target="_blank">jhun</a>`;
 
         aboutText.appendChild(aboutSpan);
         content.appendChild(aboutPhoto);
@@ -524,7 +524,7 @@ const domContent = (section) => {
         }, 3000);
         break;
       case "lab":
-        window.playerObjectLab = undefined;
+        window.playerLabObject = undefined;
         content = document.createElement("div");
         content.id = "content-lab";
         content.classList.add("image-mosaic");
@@ -579,7 +579,7 @@ const domContent = (section) => {
               cardOpenLab(e, id);
             });
           }
-        }, 4000);
+        }, 3000);
         break;
       case "contact":
         const form = document.createElement("form");
@@ -906,8 +906,8 @@ const animate = () => {
         musicHome.changeVolume(0.0);
       }
     } else {
-      if (musicHome.sound.getVolume() < 0.5) {
-        musicHome.changeVolume(0.5);
+      if (musicHome.sound.getVolume() < 1) {
+        musicHome.changeVolume(1);
       }
     }
   }

@@ -532,6 +532,37 @@ form {
   }
 }
 
+#bt-fechar {
+  position: fixed;
+  pointer-events: all;
+  cursor: pointer;
+  margin-left: calc(75vw - 103px);
+  transform: translateY(-35px);
+  padding: 0;
+  width: 100px;
+  height: 20px;
+  min-width: 25px;
+  min-height: 25px;
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  font-size: 11px;
+}
+#bt-fechar::after {
+  content: "X Close";
+}
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+  #bt-fechar {
+    margin-left: calc(50vw - 50px);
+  }
+}
+@media screen and (orientation: portrait) {
+  #bt-fechar {
+    margin-left: calc(50vw - 50px);
+  }
+}
 #card-inside {
   position: absolute;
   top: 0;
@@ -564,37 +595,6 @@ form {
   text-transform: uppercase;
   font-family: "Oswald", sans-serif;
   letter-spacing: 5px;
-}
-#bt-fechar {
-  position: fixed;
-  pointer-events: all;
-  cursor: pointer;
-  margin-left: calc(75vw - 103px);
-  transform: translateY(-35px);
-  padding: 0;
-  width: 100px;
-  height: 20px;
-  min-width: 25px;
-  min-height: 25px;
-  border: 1px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  font-size: 11px;
-}
-#bt-fechar::after {
-  content: "X Close";
-}
-@media screen and (orientation: landscape) and (max-width: 1024px) {
-  #bt-fechar {
-    margin-left: calc(50vw - 50px);
-  }
-}
-@media screen and (orientation: portrait) {
-  #bt-fechar {
-    margin-left: calc(50vw - 50px);
-  }
 }
 #card-inside-subtitle {
   width: 50vw;
@@ -649,18 +649,50 @@ form {
   }
 }
 
+#bt-fechar-lab {
+  position: fixed;
+  pointer-events: all;
+  cursor: pointer;
+  margin-left: calc(75vw - 103px);
+  transform: translateY(-35px);
+  padding: 0;
+  width: 100px;
+  height: 20px;
+  min-width: 25px;
+  min-height: 25px;
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  font-size: 11px;
+}
+#bt-fechar-lab::after {
+  content: "X Close";
+}
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+  #bt-fechar-lab {
+    margin-left: calc(50vw - 50px);
+  }
+}
+@media screen and (orientation: portrait) {
+  #bt-fechar-lab {
+    margin-left: calc(50vw - 50px);
+  }
+}
 #card-inside-lab {
   position: absolute;
   top: 0;
   visibility: hidden;
   opacity: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // justify-content: start;
   // background-color: yellowgreen;
   width: 100%;
-  height: 100vh;
+  padding-bottom: 100px;
+  overflow: hidden;
   transition: opacity 1.5s cubic-bezier(0.19, 1, 0.22, 1),
     visibility 0s linear 1.5s;
   &.on {
@@ -673,7 +705,7 @@ form {
 #card-inside-lab-title {
   width: 50vw;
   min-width: 300px;
-  margin: 0;
+  margin: 0 auto;
   padding-bottom: 10px;
   padding-left: 25px;
   padding-right: 25px;
@@ -681,34 +713,10 @@ form {
   font-family: "Oswald", sans-serif;
   letter-spacing: 5px;
 }
-#bt-fechar-lab {
-  pointer-events: all;
-  cursor: pointer;
-  margin-left: calc(50vw - 3vw);
-  margin-bottom: 10px;
-  padding: 0;
-  width: 3vw;
-  height: 3vw;
-  min-width: 25px;
-  min-height: 25px;
-  border: 1px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-#bt-fechar-lab::after {
-  content: "X";
-}
-@media screen and (orientation: portrait) {
-  #bt-fechar-lab {
-    margin-left: 0;
-  }
-}
 #card-inside-lab-subtitle {
   width: 50vw;
   min-width: 300px;
-  margin: 0;
+  margin: 0 auto;
   padding-left: 25px;
   padding-right: 25px;
   padding-bottom: 15px;
@@ -722,13 +730,19 @@ form {
 #card-inside-lab-description {
   width: 50vw;
   min-width: 300px;
-  margin: 0;
+  margin: 0 auto;
   padding-top: 15px;
   padding-left: 25px;
   padding-right: 25px;
+  text-align: left;
   font-size: 12px;
   font-weight: lighter;
   line-height: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  span {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 1);
+  }
 }
 #player-lab {
   pointer-events: all;

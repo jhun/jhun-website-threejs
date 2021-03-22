@@ -122,6 +122,33 @@ export let worksList = [
   },
   {
     id: 5,
+    cardType: "normal",
+    title: "XP Window Expert Talks Floripa 2019",
+    client: "XP Investimentos | VZLAB",
+    description: `At the <span>Experts Talks Floripa 2019</span> event, we created an interactive gesture-controlled screen. Using the concept of a magic window, we placed 2 screens with their backs to each other, in order for the user to navigate on the other side of the wall.`,
+    category: [
+      "Software Development",
+      "Creative Coding",
+      "Electronic Engeneering",
+    ],
+    technology: [
+      "Arduino",
+      "Hardware Hacking",
+      "Touchdesigner",
+      "Unity",
+      "IR Sensor",
+      "Kinect",
+      "Webcam",
+    ],
+    backgroundImage:
+      "https://website-jhun.s3-sa-east-1.amazonaws.com/images/xp-investimentos.jpg",
+    content: {
+      type: "video",
+      videoID: "fwjAltz-nDc",
+    },
+  },
+  {
+    id: 6,
     cardType: "wide",
     title: "DDX Digital Dealer Experience",
     client: "Volkswagen | VZLAB",
@@ -136,7 +163,7 @@ export let worksList = [
     },
   },
   {
-    id: 6,
+    id: 7,
     cardType: "normal",
     title: "McDonalds Jurassic World",
     client: "McDonalds | Human",
@@ -151,7 +178,7 @@ export let worksList = [
     },
   },
   {
-    id: 7,
+    id: 8,
     cardType: "wide",
     title: "MQB Volksvagen",
     client: "Volkswagen | VZLAB",
@@ -176,7 +203,7 @@ export let worksList = [
     },
   },
   {
-    id: 8,
+    id: 9,
     cardType: "tallWide",
     title: "Toyota Visitor Center",
     client: "Toyota | Venosa",
@@ -204,7 +231,7 @@ export let worksList = [
     },
   },
   {
-    id: 9,
+    id: 10,
     cardType: "normal",
     title: "Beauty Factory",
     client: "O Boticário",
@@ -228,7 +255,7 @@ export let worksList = [
     },
   },
   {
-    id: 10,
+    id: 11,
     cardType: "tall",
     title: "Metworking App",
     client: "Metworking | Startup One",
