@@ -31,7 +31,8 @@
 }
 
 // canvas {
-//   pointer-events: none;
+//   // pointer-events: none;
+
 // }
 
 body {
@@ -56,9 +57,14 @@ body {
 }
 #stage {
   opacity: 0;
+  // cursor: pointer;
   &.on {
+    cursor: grab;
     opacity: 1;
     transition: opacity 6s ease-in-out;
+    &.grabbing {
+      cursor: grabbing;
+    }
   }
 }
 
@@ -203,13 +209,14 @@ section {
   position: absolute;
   opacity: 0;
   visibility: hidden;
-  width: 100vw;
+  width: 60vw;
   height: 85vh;
+  left: 20%;
   bottom: 0;
   pointer-events: all;
   background: transparent;
   transition: visibility 0s, opacity 1s linear;
-  overflow-x: hidden;
+  overflow-x: visible;
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -231,7 +238,9 @@ section {
 
 @media screen and (orientation: portrait) {
   #dom-elements {
+    width: 85vw;
     height: 75vh;
+    left: 7.5%;
   }
 }
 
@@ -251,6 +260,8 @@ section {
   height: 100%;
 }
 form {
+  width: 100%;
+  max-width: 400px;
   pointer-events: all;
   position: absolute;
   left: 50%;
@@ -260,7 +271,7 @@ form {
   transition: opacity 2s cubic-bezier(0.19, 1, 0.22, 1), visibility 0s linear 0s;
   input,
   textarea {
-    width: 0px;
+    width: 0%;
     background: transparent;
     padding: 5px;
     margin: 10px 0;
@@ -273,7 +284,7 @@ form {
     transition: width 2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
     &.on {
       opacity: 1;
-      width: 400px;
+      width: 100%;
     }
   }
   &.off {
@@ -289,7 +300,7 @@ form {
     textarea {
       &.on {
         opacity: 1;
-        width: 300px;
+        width: 100%;
       }
     }
   }
@@ -332,8 +343,7 @@ form {
   height: 200px;
   padding: 20px;
   left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%);
   overflow: hidden;
   border: 1px solid white;
   cursor: pointer;
@@ -373,7 +383,7 @@ form {
 
   &.on {
     opacity: 1;
-    width: 50%;
+    width: 100%;
     max-width: 500px;
     height: 100%;
   }
@@ -430,7 +440,7 @@ form {
     height 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
   &.on {
     opacity: 1;
-    width: 60%;
+    width: 100%;
     height: auto;
   }
 }
@@ -536,7 +546,7 @@ form {
   position: fixed;
   pointer-events: all;
   cursor: pointer;
-  margin-left: calc(75vw - 103px);
+  margin-left: -50px;
   transform: translateY(-35px);
   padding: 0;
   width: 100px;
@@ -544,7 +554,7 @@ form {
   min-width: 25px;
   min-height: 25px;
   border: 1px solid white;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
@@ -555,12 +565,12 @@ form {
 }
 @media screen and (orientation: landscape) and (max-width: 1024px) {
   #bt-fechar {
-    margin-left: calc(50vw - 50px);
+    // margin-left: calc(25% + 25px);
   }
 }
 @media screen and (orientation: portrait) {
   #bt-fechar {
-    margin-left: calc(50vw - 50px);
+    // margin-left: calc(25% + 25px);
   }
 }
 #card-inside {
@@ -586,22 +596,22 @@ form {
   }
 }
 #card-inside-title {
-  width: 50vw;
+  width: 90%;
   min-width: 300px;
   margin: 0 auto;
   padding-bottom: 10px;
-  padding-left: 25px;
-  padding-right: 25px;
+  // padding-left: 25px;
+  // padding-right: 25px;
   text-transform: uppercase;
   font-family: "Oswald", sans-serif;
   letter-spacing: 5px;
 }
 #card-inside-subtitle {
-  width: 50vw;
+  width: 90%;
   min-width: 300px;
   margin: 0 auto;
-  padding-left: 25px;
-  padding-right: 25px;
+  // padding-left: 25px;
+  // padding-right: 25px;
   padding-bottom: 15px;
   font-size: 10px;
   font-weight: lighter;
@@ -611,12 +621,12 @@ form {
   }
 }
 #card-inside-description {
-  width: 50vw;
+  width: 90%;
   min-width: 300px;
   margin: 0 auto;
   padding-top: 15px;
-  padding-left: 25px;
-  padding-right: 25px;
+  // padding-left: 25px;
+  // padding-right: 25px;
   text-align: left;
   font-size: 12px;
   font-weight: lighter;
@@ -644,7 +654,7 @@ form {
     height 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 1s linear;
   &.on {
     opacity: 1;
-    width: 60%;
+    width: 100%;
     height: auto;
   }
 }
@@ -653,7 +663,7 @@ form {
   position: fixed;
   pointer-events: all;
   cursor: pointer;
-  margin-left: calc(75vw - 103px);
+  margin-left: -50px;
   transform: translateY(-35px);
   padding: 0;
   width: 100px;
@@ -661,7 +671,7 @@ form {
   min-width: 25px;
   min-height: 25px;
   border: 1px solid white;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
@@ -672,12 +682,12 @@ form {
 }
 @media screen and (orientation: landscape) and (max-width: 1024px) {
   #bt-fechar-lab {
-    margin-left: calc(50vw - 50px);
+    // margin-left: calc(50vw - 50px);
   }
 }
 @media screen and (orientation: portrait) {
   #bt-fechar-lab {
-    margin-left: calc(50vw - 50px);
+    // margin-left: calc(50vw - 50px);
   }
 }
 #card-inside-lab {
@@ -707,8 +717,8 @@ form {
   min-width: 300px;
   margin: 0 auto;
   padding-bottom: 10px;
-  padding-left: 25px;
-  padding-right: 25px;
+  // padding-left: 25px;
+  // padding-right: 25px;
   text-transform: uppercase;
   font-family: "Oswald", sans-serif;
   letter-spacing: 5px;
@@ -717,8 +727,8 @@ form {
   width: 50vw;
   min-width: 300px;
   margin: 0 auto;
-  padding-left: 25px;
-  padding-right: 25px;
+  // padding-left: 25px;
+  // padding-right: 25px;
   padding-bottom: 15px;
   font-size: 10px;
   font-weight: lighter;
@@ -732,8 +742,8 @@ form {
   min-width: 300px;
   margin: 0 auto;
   padding-top: 15px;
-  padding-left: 25px;
-  padding-right: 25px;
+  // padding-left: 25px;
+  // padding-right: 25px;
   text-align: left;
   font-size: 12px;
   font-weight: lighter;

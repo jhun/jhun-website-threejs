@@ -45,11 +45,15 @@ renderer.domElement.id = "stage";
 
 document.body.appendChild(renderer.domElement);
 
+let canvas = document.querySelector("canvas");
+
 const initOrbit = (pos, rot) => {
+  canvas.style.cursor = "move";
   orbitEnded = false;
 };
 
 const endOrbit = (pos, rot) => {
+  canvas.style.cursor = "grab";
   orbitEnded = true;
 };
 

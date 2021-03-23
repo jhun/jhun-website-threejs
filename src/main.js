@@ -397,8 +397,12 @@ const domContent = (section) => {
     } catch (err) {}
     switch (section) {
       case "home":
+        playerPlaying = false;
+        playerPlayingLab = false;
         break;
       case "about":
+        playerPlaying = false;
+        playerPlayingLab = false;
         content = document.createElement("div");
         content.id = "content-about";
         const aboutPhoto = document.createElement("img");
@@ -414,7 +418,7 @@ const domContent = (section) => {
         I'm graduated in Graphic Design and post-graduated (MBA) in Software Engineering. This sums up my multidisciplinary profile, always immersed in design and technology, mainly in interactive computer graphics, software engineering and electronics focused on the maker culture.
         <br />
         <br />
-        I currently work at Umantech as a Tech Leader, but I am always open to talk about possible projects.
+        I currently work at Umantech as Tech Lead, but I am always open to talk about possible projects.
         <br />
         <br />
         Feel free to <span class="send-message">send me a message</span>!
@@ -466,6 +470,8 @@ const domContent = (section) => {
 
         break;
       case "works":
+        playerPlaying = false;
+        playerPlayingLab = false;
         window.playerObject = undefined;
         content = document.createElement("div");
         content.id = "content-works";
@@ -524,6 +530,8 @@ const domContent = (section) => {
         }, 3000);
         break;
       case "lab":
+        playerPlaying = false;
+        playerPlayingLab = false;
         window.playerLabObject = undefined;
         content = document.createElement("div");
         content.id = "content-lab";
@@ -582,6 +590,8 @@ const domContent = (section) => {
         }, 3000);
         break;
       case "contact":
+        playerPlaying = false;
+        playerPlayingLab = false;
         const form = document.createElement("form");
 
         const br = document.createElement("br");
