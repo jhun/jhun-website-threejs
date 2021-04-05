@@ -56,6 +56,8 @@ export default class LoadGLTF {
     this.loaderAnimal.load(
       gltfAnimal,
       (gltf) => {
+        Preloader.instanceLoaded(); //add
+        Preloader.instancesLoaded(); //check
         this.durationTrail = this.randomIntFromInterval(60, 90);
         this.model = gltf;
         for (let i = 0; i < this.modelTrail.length; i++) {
@@ -161,10 +163,10 @@ export default class LoadGLTF {
       (xhr) => {
         // called while loading is progressing
         let percentage = Math.floor((xhr.loaded / xhr.total) * 100);
-        if (percentage === 100) {
-          Preloader.instanceLoaded(); //add
-          Preloader.instancesLoaded(); //check
-        }
+        // if (percentage === 100) {
+        //   Preloader.instanceLoaded(); //add
+        //   Preloader.instancesLoaded(); //check
+        // }
         // console.log(`${percentage}% loaded`);
       },
       (error) => {
