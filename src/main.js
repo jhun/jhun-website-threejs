@@ -234,55 +234,124 @@ const makeCard = (
       let card = document.createElement("div");
       card.classList.add("card");
       card.dataset.cardId = cardId;
+      let bg = document.createElement("div");
+      bg.classList.add("bg");
+      card.style.backgroundImage = `url(${cardBackgroundImage})`;
+      if (currentSection == "works") {
+        bg.style.backgroundImage = `linear-gradient(
+        rgba(255, 120, 0, 1), 
+        rgba(255, 120, 0, 1)
+      ), url(${cardBackgroundImage})`;
+      } else {
+        bg.style.backgroundImage = `linear-gradient(
+          rgba(120, 00, 255, 1), 
+          rgba(120, 00, 255, 1)
+        ), url(${cardBackgroundImage})`;
+      }
+      card.appendChild(bg);
       let titleCard = document.createElement("div");
       titleCard.classList.add("title");
       titleCard.innerHTML = cardTitle;
       card.appendChild(titleCard);
-      card.style.backgroundImage = `url(${cardBackgroundImage})`;
+
       return card;
       break;
     case "tall":
       let cardTall = document.createElement("div");
       cardTall.classList.add("card", "card-tall");
       cardTall.dataset.cardId = cardId;
+      let bgTall = document.createElement("div");
+      bgTall.classList.add("bg");
+      cardTall.style.backgroundImage = `url(${cardBackgroundImage})`;
+      if (currentSection == "works") {
+        bgTall.style.backgroundImage = `linear-gradient(
+        rgba(255, 120, 0, 1), 
+        rgba(255, 120, 0, 1)
+      ), url(${cardBackgroundImage})`;
+      } else {
+        bgTall.style.backgroundImage = `linear-gradient(
+          rgba(120, 00, 255, 1), 
+          rgba(120, 00, 255, 1)
+        ), url(${cardBackgroundImage})`;
+      }
+      cardTall.appendChild(bgTall);
       let titleCardTall = document.createElement("div");
       titleCardTall.classList.add("title");
       titleCardTall.innerHTML = cardTitle;
       cardTall.appendChild(titleCardTall);
-      cardTall.style.backgroundImage = `url(${cardBackgroundImage})`;
+      // cardTall.style.backgroundImage = `url(${cardBackgroundImage})`;
       return cardTall;
       break;
     case "wide":
       let cardWide = document.createElement("div");
       cardWide.classList.add("card", "card-wide");
       cardWide.dataset.cardId = cardId;
+      let bgWide = document.createElement("div");
+      bgWide.classList.add("bg");
+      bgWide.classList.add("bg-wide");
+      cardWide.style.backgroundImage = `url(${cardBackgroundImage})`;
+      if (currentSection == "works") {
+        bgWide.style.backgroundImage = `linear-gradient(
+        rgba(255, 120, 0, 1), 
+        rgba(255, 120, 0, 1)
+      ), url(${cardBackgroundImage})`;
+      } else {
+        bgWide.style.backgroundImage = `linear-gradient(
+          rgba(120, 00, 255, 1), 
+          rgba(120, 00, 255, 1)
+        ), url(${cardBackgroundImage})`;
+      }
+      cardWide.appendChild(bgWide);
       let titleCardWide = document.createElement("div");
       titleCardWide.classList.add("title");
       titleCardWide.innerHTML = cardTitle;
       cardWide.appendChild(titleCardWide);
-      cardWide.style.backgroundImage = `url(${cardBackgroundImage})`;
+      // cardWide.style.backgroundImage = `url(${cardBackgroundImage})`;
       return cardWide;
       break;
     case "tallWide":
       let cardTallWide = document.createElement("div");
       cardTallWide.classList.add("card", "card-tall", "card-wide");
       cardTallWide.dataset.cardId = cardId;
+      let bgTallWide = document.createElement("div");
+      bgTallWide.classList.add("bg");
+      cardTallWide.style.backgroundImage = `url(${cardBackgroundImage})`;
+      if (currentSection == "works") {
+        bgTallWide.style.backgroundImage = `linear-gradient(
+        rgba(255, 120, 0, 1), 
+        rgba(255, 120, 0, 1)
+      ), url(${cardBackgroundImage})`;
+      } else {
+        bgTallWide.style.backgroundImage = `linear-gradient(
+          rgba(120, 00, 255, 1), 
+          rgba(120, 00, 255, 1)
+        ), url(${cardBackgroundImage})`;
+      }
+      cardTallWide.appendChild(bgTallWide);
       let titleCardTallWide = document.createElement("div");
       titleCardTallWide.classList.add("title");
       titleCardTallWide.innerHTML = cardTitle;
       cardTallWide.appendChild(titleCardTallWide);
-      cardTallWide.style.backgroundImage = `url(${cardBackgroundImage})`;
+      // cardTallWide.style.backgroundImage = `url(${cardBackgroundImage})`;
       return cardTallWide;
       break;
   }
 };
 const cardOver = (e) => {
   e.target.classList.add("on");
+  e.target.querySelector(".bg").classList.add("on");
   e.target.querySelector(".title").classList.add("on");
+  if (currentSection == "lab") {
+    e.target.querySelector(".title").classList.add("deep");
+  }
 };
 const cardOut = (e) => {
   e.target.classList.remove("on");
+  e.target.querySelector(".bg").classList.remove("on");
   e.target.querySelector(".title").classList.remove("on");
+  if (currentSection == "lab") {
+    e.target.querySelector(".title").classList.remove("deep");
+  }
 };
 const cardOpen = (e, cardId) => {
   e.target.classList.remove("on");
@@ -960,8 +1029,73 @@ const randomFloatFromInterval = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
+const SmoothScroll = (target, speed, smooth) => {
+  if (target === document)
+    target =
+      document.scrollingElement ||
+      document.documentElement ||
+      document.body.parentNode ||
+      document.body; // cross browser support for document scrolling
+
+  var moving = false;
+  var pos = target.scrollTop;
+  var frame =
+    target === document.body && document.documentElement
+      ? document.documentElement
+      : target; // safari is the new IE
+
+  target.addEventListener("mousewheel", scrolled, { passive: false });
+  target.addEventListener("DOMMouseScroll", scrolled, { passive: false });
+
+  function scrolled(e) {
+    e.preventDefault(); // disable default scrolling
+
+    var delta = normalizeWheelDelta(e);
+
+    pos += -delta * speed;
+    pos = Math.max(0, Math.min(pos, target.scrollHeight - frame.clientHeight)); // limit scrolling
+
+    if (!moving) update();
+  }
+
+  function normalizeWheelDelta(e) {
+    if (e.detail) {
+      if (e.wheelDelta)
+        return (e.wheelDelta / e.detail / 40) * (e.detail > 0 ? 1 : -1);
+      // Opera
+      else return -e.detail / 3; // Firefox
+    } else return e.wheelDelta / 120; // IE,Safari,Chrome
+  }
+
+  function update() {
+    moving = true;
+
+    var delta = (pos - target.scrollTop) / smooth;
+
+    target.scrollTop += delta;
+
+    if (Math.abs(delta) > 0.5) requestFrame(update);
+    else moving = false;
+  }
+
+  var requestFrame = (function () {
+    // requestAnimationFrame cross browser
+    return (
+      window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function (func) {
+        window.setTimeout(func, 1000 / 50);
+      }
+    );
+  })();
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   domElement = document.getElementById("dom-elements");
+  SmoothScroll(domElement, 120, 12);
 });
 
 window.onload = function () {

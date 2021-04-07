@@ -56,8 +56,6 @@ export default class LoadGLTF {
     this.loaderAnimal.load(
       gltfAnimal,
       (gltf) => {
-        Preloader.instanceLoaded(); //add
-        Preloader.instancesLoaded(); //check
         this.durationTrail = this.randomIntFromInterval(60, 90);
         this.model = gltf;
         for (let i = 0; i < this.modelTrail.length; i++) {
@@ -159,6 +157,8 @@ export default class LoadGLTF {
             this.mixerTrail[i].clipAction(this.model.animations[0]).play();
           }
         }
+        Preloader.instanceLoaded(); //add
+        Preloader.instancesLoaded(); //check
       },
       (xhr) => {
         // called while loading is progressing

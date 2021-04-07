@@ -2,7 +2,7 @@ export let worksList = [
   {
     id: 0,
     cardType: "tallWide",
-    title: "O Parque",
+    title: "O Parque Gamaro",
     client: "Gamaro | VZLAB",
     description: `<span>TUNNEL EXPERIENCE</span>: Interactive tunnel that reacts to people's position. In the "Waterfall" mode, the watercourse moves influenced by visitors, on the floor and on the wall. In "Forest" mode, flowers and plants bloom as the user walks through the tunnel, forming a trail of blooming flowers and on the wall, the butterflies move to the user's region.
     <br/><span>ELEVATOR EXPERIENCE</span>: An interactive panoramic elevator designed with video wall, elevator doors, floor with vibration engine, animation and spatial sound synchronized and automated, bringing a complete sensory experience.`,
